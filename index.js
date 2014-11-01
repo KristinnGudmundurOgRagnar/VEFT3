@@ -1,5 +1,23 @@
 var dgram = require("dgram");
 
+var mongoose = require("mongoose");
+
+
+var connectToMongo = function(){
+	mongoose.connect("mongodb://localhost", {keepAlive: 1});
+	console.log("Connecting to mongoose");
+}
+
+var onMongoConnection = function(){
+	console.log("Connection to mongoose successful");
+}
+
+mongoose.connection.on("disconnected", connectToMongo);
+mongoose.connection.on("connected", onMongoConnection);
+connectToMongo();
+
+
+
 var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
