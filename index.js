@@ -10,18 +10,42 @@ var connectToMongo = function(){
 
 var onMongoConnection = function(){
 	console.log("Connection to mongoose successful");
+  var db = mongoose.connection;
+  db.on('error', console.error.bind(console, 'connection error:'));
 }
 
 mongoose.connection.on("disconnected", connectToMongo);
 mongoose.connection.on("connected", onMongoConnection);
 connectToMongo();
 
+var KodemonSchema = mongoose.Schema({
+  message: String
+})
+var Entry = mongoose.model('Entry', KodemonSchema);
 
+function addToMongo(msg){
 
+  var thisEntry = new Entry({ message: msg + "lol" })
+
+  thisEntry.save(function (err, thisEntry) {
+  if (err) return console.error(err);
+  });
+}
+
+function getAllMongos()
+{
+  
+  Entry.find(function (err, entries) {
+    if (err) return console.error(err);
+    console.log(entries)
+  })
+}
 var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
-	console.log('got message from client: ' + msg);
+	//console.log('got message from client: ' + msg);
+  addToMongo(msg)
+  getAllMongos()
 
 });
 
