@@ -21,12 +21,11 @@ mongoose.set('debug', true);
  */
 router.get('/keys', function(req, res) {
     Entry.distinct('key', function(err, entries) {
-        if (err) 
-        {
+        if (err) {
             console.error(err);
             res.send(404);
         }
-        
+
         console.log(entries);
         res.send(entries);
     })
@@ -39,13 +38,14 @@ router.get('/keys', function(req, res) {
 router.get('/key/:key_id/execution_time', function(req, res) {
     var key_id = req.params.key_id;
 
-    Entry.find({ key: key_id }, 'execution_time', function (err, entries) { 
-         if (err) 
-        {
+    Entry.find({
+        key: key_id
+    }, 'execution_time', function(err, entries) {
+        if (err) {
             console.error(err);
             res.send(404);
         }
-        
+
         console.log(entries);
         res.send(entries);
     });
@@ -59,23 +59,24 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime', function(req, res)
     var startTime = parseInt(req.params.startTime);
     var endTime = parseInt(req.params.endTime);
 
-    Entry.find(
-        {
-            $query: 
-            {
-                key: key_id,
-                timestamp: {
-                    $gte: (startTime),
-                    $lte: parseInt(endTime)
-                }
+    Entry.find({
+        $query: {
+            key: key_id,
+            timestamp: {
+                $gte: startTime,
+                $lte: endTime
+            }
 
-            }, 
-            $orderby: {
-                timestamp: -1
-            },
-        }, 'key', function(err, entries) {
-            res.send(entries);
-        });
+        },
+        $orderby: {
+            timestamp: -1
+        },
+    }, 'key', function(err, entries) {
+        if (err)
+            res.send(500, err);
+
+        res.send(entries);
+    });
 });
 
 module.exports = router;
