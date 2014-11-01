@@ -11,6 +11,8 @@ var Entry = mongoose.model('Entry');
 var db = require('../db');
 db.connectToMongo();
 
+mongoose.set('debug', true);
+
 
 /*
  * List all keys (without any values) that have been sent to the server.
@@ -52,23 +54,28 @@ router.get('/key/:key_id/execution_time', function(req, res) {
 /*
  * List all execution times, for a given key on a given time range.
  */
-router.get('/key/:key_id/execute_time/:time', function(req, res) {
+router.get('/key/:key_id/execution_time/:startTime/:endTime', function(req, res) {
     var key_id = req.params.key_id;
-    var time_id = req.params.time;
+    var startTime = parseInt(req.params.startTime);
+    var endTime = parseInt(req.params.endTime);
 
-    res.send([{
-        'key': key_id,
-        'time': time_id
-    }]);
-    /*res.json([{
-		'key': key_id,
-		'time': time_id
-		}]);*/
-    /*process.nextTick(function () {
-    callback(null, [
-      {key: key_id, time: time_id }]
-    );
-  });*/
+    Entry.find(
+        {
+            $query: 
+            {
+                key: key_id,
+                timestamp: {
+                    $gte: (startTime),
+                    $lte: parseInt(endTime)
+                }
+
+            }, 
+            $orderby: {
+                timestamp: -1
+            },
+        }, 'key', function(err, entries) {
+            res.send(entries);
+        });
 });
 
 module.exports = router;
