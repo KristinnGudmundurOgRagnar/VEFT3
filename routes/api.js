@@ -18,7 +18,7 @@ db.connectToMongo();
  * that have been sending messages to the server.
  */
 router.get('/keys', function(req, res) {
-    Entry.find("key", function(err, entries) {
+    Entry.distinct('key', function(err, entries) {
         if (err) 
         {
             console.error(err);
