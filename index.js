@@ -2,6 +2,10 @@ var dgram = require("dgram");
 
 var mongoose = require("mongoose");
 
+require('./models/kodemon')
+
+Entry = mongoose.model('Entry');
+
 
 var connectToMongo = function(){
 	mongoose.connect("mongodb://localhost", {keepAlive: 1});
@@ -18,11 +22,6 @@ mongoose.connection.on("disconnected", connectToMongo);
 mongoose.connection.on("connected", onMongoConnection);
 connectToMongo();
 
-var KodemonSchema = mongoose.Schema({
-  message: String
-})
-var Entry = mongoose.model('Entry', KodemonSchema);
-
 function addToMongo(msg){
 
   var thisEntry = new Entry({ message: msg + "lol" })
@@ -31,7 +30,10 @@ function addToMongo(msg){
   if (err) return console.error(err);
   });
 }
-
+function drop()
+{
+  Entry.remove({},function(error){})
+}
 function getAllMongos()
 {
   
@@ -44,9 +46,20 @@ var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
 	//console.log('got message from client: ' + msg);
-  addToMongo(msg)
-  getAllMongos()
+  //addToMongo(msg)
+  drop();
+  getAllMongos();
 
+
+/*
+	var JSONmsg = JSON.parse(msg);
+	console.log('got message from client: ' + JSONmsg);
+	
+	//Retrieve the fields from the message
+	var executionTime = JSONmsg.execution_time;
+	var timeStamp = JSONmsg.timestamp;
+	var token = JSONmsg.token;
+	var key = JSONmsg.key;*/
 });
 
 server.on('listening', function(){

@@ -21,7 +21,13 @@ app.use(bodyParser.urlencoded({
 // Routing
 app.use('/api', api);
 
-//module.exports = app;
+app.get('/', function(req, res) {
+    res.send(
+        '<ul>Available methods are: ' +
+        '<li>/api/listAll </li><li>/api/listAllExecution/:key_id ' +
+        '</li><li>/api/listAllExecutionTime/:key_id/:time</li></ul>'
+    )
+});
 
 // error handling middleware should be loaded after the loading the routes
 if ('development' == app.get('env')) {
