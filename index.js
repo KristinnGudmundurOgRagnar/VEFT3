@@ -24,7 +24,9 @@ connectToMongo();
 
 function addToMongo(msg){
 
-    var thisEntry = new Entry({ message: msg + "lol" })
+    var parsed = JSON.parse(msg);
+
+    var thisEntry = new Entry(parsed);
 
     thisEntry.save(function (err, thisEntry) {
         if (err) return console.error(err);
@@ -45,12 +47,8 @@ var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
     //console.log('got message from client: ' + msg);
-    //addToMongo(msg)
-    drop();
-    getAllMongos();
+    //drop();
 
-
-/*
 	var JSONmsg = JSON.parse(msg);
 	console.log('got message from client: ' + JSONmsg);
 	
@@ -58,7 +56,11 @@ server.on("message", function(msg, rinfo){
 	var executionTime = JSONmsg.execution_time;
 	var timeStamp = JSONmsg.timestamp;
 	var token = JSONmsg.token;
-	var key = JSONmsg.key;*/
+	var key = JSONmsg.key;
+
+    //addToMongo(executionTime, timestamp, token, key);
+    addToMongo(msg);
+    getAllMongos();
 });
 
 server.on('listening', function(){
