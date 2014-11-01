@@ -4,9 +4,11 @@
 var express = require('express');
 var router = express.Router();
 
-require('./models/kodemon')
+var mongoose =  require("mongoose");
 
-Entry = mongoose.model('Entry');
+require('../models/kodemon')
+
+var Entry = mongoose.model('Entry');
 
 /*
  * List all keys (without any values) that have been sent to the server.
