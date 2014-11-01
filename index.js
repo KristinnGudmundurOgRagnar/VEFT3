@@ -2,6 +2,10 @@ var dgram = require("dgram");
 
 var mongoose = require("mongoose");
 
+require('./models/kodemon')
+
+Entry = mongoose.model('Kodemon');
+
 
 var connectToMongo = function(){
 	mongoose.connect("mongodb://localhost", {keepAlive: 1});
