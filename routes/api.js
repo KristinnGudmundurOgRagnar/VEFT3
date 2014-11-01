@@ -1,12 +1,15 @@
 'use strict';
 
-
 var express = require('express');
 var router = express.Router();
+var mongoose = require("mongoose");
 
-require('./models/kodemon')
+require('../models/kodemon')
 
-Entry = mongoose.model('Entry');
+var Entry = mongoose.model('Entry');
+
+var db = require('../db');
+db.connectToMongo();
 
 /*
  * List all keys (without any values) that have been sent to the server.
@@ -14,7 +17,16 @@ Entry = mongoose.model('Entry');
  * that have been sending messages to the server.
  */
 router.get('/keys', function(req, res) {
-    Entry.find
+    Entry.find("key", function(err, entries) {
+        if (err) 
+        {
+            console.error(err);
+            res.send(404);
+        }
+        
+        console.log(entries);
+        res.send(entries);
+    })
 });
 
 
@@ -24,15 +36,16 @@ router.get('/keys', function(req, res) {
 router.get('/key/:key_id/execute_time', function(req, res) {
     var key_id = req.params.key_id;
 
-    res.send([{
-        'key': key_id
-    }]);
-    //res.json([{'key': key_id}]);
-    /*process.nextTick(function () {
-		callback(null, [
-			{key: key_id}]
-			);
-	});*/
+    Entry.find({key: key_id}, function(err, entries) {
+        if (err) 
+        {
+            console.error(err);
+            res.send(404);
+        }
+        
+        console.log(entries);
+        res.send(entries);
+    });
 });
 
 /*

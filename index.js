@@ -7,20 +7,11 @@ require('./models/kodemon')
 Entry = mongoose.model('Entry');
 
 
-var connectToMongo = function(){
-	mongoose.connect("mongodb://localhost", {keepAlive: 1});
-	console.log("Connecting to mongoose");
-}
+var db = require('./db');
 
-var onMongoConnection = function(){
-	console.log("Connection to mongoose successful");
-    var db = mongoose.connection;
-    db.on('error', console.error.bind(console, 'connection error:'));
-}
-
-mongoose.connection.on("disconnected", connectToMongo);
-mongoose.connection.on("connected", onMongoConnection);
-connectToMongo();
+mongoose.connection.on("disconnected", db.connectToMongo);
+mongoose.connection.on("connected", db.onMongoConnection);
+db.connectToMongo();
 
 function addToMongo(msg){
 
