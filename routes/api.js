@@ -10,7 +10,7 @@ var router = express.Router();
  * that have been sending messages to the server.
  */
 router.get('/listAll', function(req, res) {
-	//res.json([{'key': 'Nothing'}]);
+	res.send([{'key': 'Nothing'}]);
 });
 
 
