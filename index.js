@@ -21,8 +21,14 @@ connectToMongo();
 var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
-	console.log('got message from client: ' + msg);
-
+	var JSONmsg = JSON.parse(msg);
+	console.log('got message from client: ' + JSONmsg);
+	
+	//Retrieve the fields from the message
+	var executionTime = JSONmsg.execution_time;
+	var timeStamp = JSONmsg.timestamp;
+	var token = JSONmsg.token;
+	var key = JSONmsg.key;
 });
 
 server.on('listening', function(){
