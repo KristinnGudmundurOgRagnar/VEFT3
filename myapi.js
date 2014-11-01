@@ -1,7 +1,7 @@
 var express = require('express'),
     bodyParser = require('body-parser'),
     logger = require('morgan'),
-    debug = require('debug')('myapp');
+    debug = require('debug')('VEFT3');
 
 
 var api = require('./routes/api');
@@ -22,5 +22,5 @@ module.exports = app;
 app.set('port', process.env.PORT || 3000);
 
 var server = app.listen(app.get('port'), function() {
-  debug('Express server listening on port ' + server.address().port);
+    debug('Express server listening on port ' + server.address().port);
 });
