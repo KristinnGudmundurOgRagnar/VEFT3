@@ -22,10 +22,12 @@ app.use(bodyParser.urlencoded({
 app.use('/api', api);
 
 app.get('/', function(req, res) {
-	res.send('<ul>Available methods are: <li>/api/listAll, </li><li>/api/listAllExecution/:key_id, </li><li>/api/listAllExecutionTime/:key_id/:time</li></ul>')
+    res.send(
+        '<ul>Available methods are: ' +
+        '<li>/api/listAll </li><li>/api/listAllExecution/:key_id ' +
+        '</li><li>/api/listAllExecutionTime/:key_id/:time</li></ul>'
+    )
 });
-
-//module.exports = app;
 
 // error handling middleware should be loaded after the loading the routes
 if ('development' == app.get('env')) {
