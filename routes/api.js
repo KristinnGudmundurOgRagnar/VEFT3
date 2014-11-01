@@ -11,6 +11,7 @@ var Entry = mongoose.model('Entry');
 var db = require('../db');
 db.connectToMongo();
 
+
 /*
  * List all keys (without any values) that have been sent to the server.
  * With the method you would see a list of all the methods
@@ -51,7 +52,7 @@ router.get('/key/:key_id/execute_time', function(req, res) {
 /*
  * List all execution times, for a given key on a given time range.
  */
-router.get('/key/:key_id/:time', function(req, res) {
+router.get('/key/:key_id/execute_time/:time', function(req, res) {
     var key_id = req.params.key_id;
     var time_id = req.params.time;
 
