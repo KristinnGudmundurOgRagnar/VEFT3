@@ -24,8 +24,8 @@ app.use('/api', api);
 app.get('/', function(req, res) {
     res.send(
         '<ul>Available methods are: ' +
-        '<li>/api/listAll </li><li>/api/listAllExecution/:key_id ' +
-        '</li><li>/api/listAllExecutionTime/:key_id/:time</li></ul>'
+        '<li>/api/keys </li><li>/api/key/:key_id/execution_time ' +
+        '</li><li>/api/key/:key_id/execute_time/:time</li></ul>'
     )
 });
 

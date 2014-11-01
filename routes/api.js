@@ -34,11 +34,11 @@ router.get('/keys', function(req, res) {
 /* 
  * List all execution times for a given key.
  */
-router.get('/key/:key_id/execute_time', function(req, res) {
+router.get('/key/:key_id/execution_time', function(req, res) {
     var key_id = req.params.key_id;
 
-    Entry.find({key: key_id}, function(err, entries) {
-        if (err) 
+    Entry.find({ key: key_id }, 'execution_time', function (err, entries) { 
+         if (err) 
         {
             console.error(err);
             res.send(404);
