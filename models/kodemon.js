@@ -2,8 +2,8 @@ var mongoose = require('mongoose'),
     Schema = mongoose.Schema;
 
 var KodemonSchema = new Schema({
-    executionTime: Number,
-    timeStamp: Number,
+    execution_time: Number,
+    timestamp: Number,
     token: String,
     key: String
 });
