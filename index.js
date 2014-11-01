@@ -14,8 +14,8 @@ var connectToMongo = function(){
 
 var onMongoConnection = function(){
 	console.log("Connection to mongoose successful");
-  var db = mongoose.connection;
-  db.on('error', console.error.bind(console, 'connection error:'));
+    var db = mongoose.connection;
+    db.on('error', console.error.bind(console, 'connection error:'));
 }
 
 mongoose.connection.on("disconnected", connectToMongo);
@@ -24,31 +24,30 @@ connectToMongo();
 
 function addToMongo(msg){
 
-  var thisEntry = new Entry({ message: msg + "lol" })
+    var thisEntry = new Entry({ message: msg + "lol" })
 
-  thisEntry.save(function (err, thisEntry) {
-  if (err) return console.error(err);
-  });
+    thisEntry.save(function (err, thisEntry) {
+        if (err) return console.error(err);
+    });
 }
 function drop()
 {
-  Entry.remove({},function(error){})
+    Entry.remove({},function(error){})
 }
 function getAllMongos()
 {
-  
-  Entry.find(function (err, entries) {
-    if (err) return console.error(err);
-    console.log(entries)
-  })
+    Entry.find(function (err, entries) {
+        if (err) return console.error(err);
+            console.log(entries)
+    })
 }
 var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
-	//console.log('got message from client: ' + msg);
-  //addToMongo(msg)
-  drop();
-  getAllMongos();
+    //console.log('got message from client: ' + msg);
+    //addToMongo(msg)
+    drop();
+    getAllMongos();
 
 
 /*
