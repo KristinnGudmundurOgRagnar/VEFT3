@@ -45,13 +45,12 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
                 $scope.executionTimes = data;
                 $scope.drasl = [];
                 angular.forEach(data, function(key, value) {
-                	$scope.drasl.push(data[key][1]);
+                	$scope.drasl.push(data[value].execution_time);
 
                 })
                 $scope.chartSeries = [
 		{"name": "Some data", "data": $scope.drasl},
 	];
-	alert(JSON.stringify($scope.drasl));
                 //setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
