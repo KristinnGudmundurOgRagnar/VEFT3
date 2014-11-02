@@ -22,6 +22,7 @@ function($scope, $location, $routeParams, $http, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
+                setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
             }
@@ -40,6 +41,7 @@ function($scope, $location, $routeParams, $http, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
+                setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
             }
@@ -50,4 +52,14 @@ function($scope, $location, $routeParams, $http, apiRoute){
 	};
 
 	$scope.getAll();
+
+	function setExecutionTimeFormat(){
+		for(var i = 0; i < $scope.executionTimes.length; i++){
+			var newTime = new Date();
+			newTime.setUTCSeconds($scope.executionTimes[i].timestamp);
+			newTime = newTime.toLocaleString();
+
+			$scope.executionTimes[i].timestamp = newTime;
+		}
+	}
 }]);
