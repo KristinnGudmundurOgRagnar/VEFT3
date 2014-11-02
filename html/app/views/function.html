@@ -15,12 +15,20 @@
 		<th>TimeStamp</th>
 		<th>Execution time</th>
 
+<ul ng-repeat="time in executionTimes">
+	<li>{{time.execution_time}}</li>
+</ul>
+
 	</thead>
 	<tr ng-repeat="time in executionTimes">
 		<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
 		<td>{{time.execution_time}}</td>
 	</tr>
 </table>
+
+<div>
+	<highchart id="chart1" config="chartConfig" class="span9" ></highchart>
+</div>
 
   <script>
   $('#date').datepicker({
@@ -35,3 +43,6 @@
       }
   })();
   </script>
+
+
+

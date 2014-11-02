@@ -2,7 +2,8 @@ var userApp = angular.module("userApp", [
     'ngResource',
     'ngSanitize',
     'ngRoute',
-    'config'
+    'config',
+    'highcharts-ng'
 ]);
 
 userApp.config(["$routeProvider",
@@ -16,5 +17,6 @@ userApp.config(["$routeProvider",
         }).otherwise({
             redirectTo: "/"
         });
+        
     }
 ]);

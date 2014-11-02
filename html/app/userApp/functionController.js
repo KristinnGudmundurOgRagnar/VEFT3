@@ -33,7 +33,7 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
             console.log("Error: unable to connect");
         });
 	};
-	
+	$scope.chartSeries = [];
 	$scope.getAll = function(){
 		console.log("Get all");
 		$http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
@@ -43,6 +43,15 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
+                $scope.drasl = [];
+                angular.forEach(data, function(key, value) {
+                	$scope.drasl.push(data[key][1]);
+
+                })
+                $scope.chartSeries = [
+		{"name": "Some data", "data": $scope.drasl},
+	];
+	alert(JSON.stringify($scope.drasl));
                 //setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
@@ -54,6 +63,7 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
 	};
 
 	$scope.getAll();
+	$scope.apply;
 
 	function setExecutionTimeFormat(){
 		for(var i = 0; i < $scope.executionTimes.length; i++){
@@ -64,4 +74,32 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
 			$scope.executionTimes[i].timestamp = newTime;
 		}
 	}
+
+	/*
+	$scope.chartSeries = [
+		{"name": "Some data", "data": [1,2]},
+	];
+*/
+	$scope.chartConfig = {
+		options: {
+			chart: {
+				type: 'line'
+			},
+			plotOptions: {
+				series: {
+					stacking: ''
+				}
+			}
+		},
+		series: $scope.chartSeries,
+		title: {
+			text: 'Execution Times'
+		},
+		credits: {
+			enabled: true
+		},
+		loading: false,
+		size: {}
+	}
+
 }]);
