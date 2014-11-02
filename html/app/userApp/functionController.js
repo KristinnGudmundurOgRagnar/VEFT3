@@ -50,4 +50,32 @@ function($scope, $location, $routeParams, $http, apiRoute){
 	};
 
 	$scope.getAll();
+
+	$scope.chartSeries = [
+		{"name": "Some data", "data": [1, 2, 4, 7, 3]},
+	];
+
+	$scope.chartConfig = {
+		options: {
+			chart: {
+				type: 'line'
+			},
+			plotOptions: {
+				series: {
+					stacking: ''
+				}
+			}
+		},
+		series: $scope.chartSeries,
+		title: {
+			text: 'Execution Times'
+		},
+		credits: {
+			enabled: true
+		},
+		loading: false,
+		size: {}
+	}
+
+	
 }]);
