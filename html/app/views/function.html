@@ -1,14 +1,16 @@
 <h2>Execution times for key: {{currentKey}}</h2>
 <label>Search for execution times in range:</label>
-<form name="timeRangeForm" ng-submit="submitTimeRange()">
+<form role="form" name="timeRangeForm" ng-submit="submitTimeRange()" >
 	<input type="number" ng-model="startTime" required placeholder="Start time">
 	<input type="number" ng-model="endTime" required placeholder="End time">
 
-	<input type="submit" value="Submit" />
+	<button type="submit" class="btn btn-default">Submit</button>
 </form>
 <button ng-click="getAll()">Get all execution times</button>
+<input type="date" name="date" id="date" value="" />
+<input id="spinner" name="spinner" value="{{currentTime}}" />
 
-<table>
+<table class="table table-striped">
 	<thead>
 		<th>TimeStamp</th>
 		<th>Execution time</th>
@@ -19,3 +21,17 @@
 		<td>{{time.execution_time}}</td>
 	</tr>
 </table>
+
+  <script>
+  $('#date').datepicker({
+      dateFormat: 'dd-mm-yy'
+  });
+  (function() {
+      var elem = document.createElement('input');
+      elem.setAttribute('type', 'date');
+
+      if (elem.type === 'text') {
+          $('#date').datepicker();
+      }
+  })();
+  </script>

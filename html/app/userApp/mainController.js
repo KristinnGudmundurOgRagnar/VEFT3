@@ -6,6 +6,7 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
         //alert("Ready to work");
 
 
+        
         $scope.listOfKeys = [];
 
         $http.get(apiRoute.apiEndpoint + '/api/keys').

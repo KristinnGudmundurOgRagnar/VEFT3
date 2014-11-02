@@ -38,10 +38,10 @@ module.exports = function(grunt) {
                 files: ['test/spec/{,*/}*.js'],
                 tasks: ['newer:jshint:test', 'karma']
             },
-            compass: {
-                files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
-                tasks: ['compass:server', 'autoprefixer']
-            },
+            //compass: {
+             //   files: ['<%= yeoman.app %>/styles/{,*/}*.{scss,sass}'],
+             //   tasks: ['compass:server', 'autoprefixer']
+            //},
             gruntfile: {
                 files: ['Gruntfile.js']
             },
