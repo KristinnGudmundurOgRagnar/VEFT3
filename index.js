@@ -1,12 +1,7 @@
 var dgram = require("dgram");
-
 var mongoose = require("mongoose");
-
 require('./models/kodemon')
-
 Entry = mongoose.model('Entry');
-
-
 var db = require('./db');
 
 mongoose.connection.on("disconnected", db.connectToMongo);
@@ -16,17 +11,13 @@ db.connectToMongo();
 function addToMongo(msg){
 
     var parsed = JSON.parse(msg);
-
     var thisEntry = new Entry(parsed);
 
     thisEntry.save(function (err, thisEntry) {
         if (err) return console.error(err);
     });
 }
-function drop()
-{
-    Entry.remove({},function(error){})
-}
+
 function getAllMongos()
 {
     Entry.find(function (err, entries) {
@@ -34,11 +25,14 @@ function getAllMongos()
             console.log(entries)
     })
 }
+
+function dropMongo()
+{
+    Entry.remove({},function(error){})
+}
 var server = dgram.createSocket("udp4");
 
 server.on("message", function(msg, rinfo){
-    //console.log('got message from client: ' + msg);
-    //drop();
 
 	var JSONmsg = JSON.parse(msg);
 	console.log('got message from client: ' + JSONmsg);
@@ -49,7 +43,6 @@ server.on("message", function(msg, rinfo){
 	var token = JSONmsg.token;
 	var key = JSONmsg.key;
 
-    //addToMongo(executionTime, timestamp, token, key);
     addToMongo(msg);
     getAllMongos();
 });
