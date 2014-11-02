@@ -3,7 +3,8 @@ var express = require('express'),
     logger = require('morgan'),
     debug = require('debug')('VEFT3'),
     errorHandler = require('errorhandler'),
-    methodOverride = require('method-override');
+    methodOverride = require('method-override'),
+    cors = require('cors');
 
 
 var api = require('./routes/api');
@@ -17,12 +18,14 @@ app.use(bodyParser.urlencoded({
     extended: true
 }));
 
-app.use(function(req, res, next) {
+/*app.use(function(req, res, next) {
     res.header("Access-Control-Allow-Origin", "*");
     res.header("Access-Control-Allow-Headers", "Origin, X-Requested-With, Content-Type, Accept");
+    res.header("Content-Type", "application/json; charset=utf-8");
     return next();
 });
-
+*/
+app.use(cors());
 
 // Routing
 app.use('/api', api);
