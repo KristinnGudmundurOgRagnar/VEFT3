@@ -38,7 +38,7 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             $scope.chartConfig = {
                 options: {
                     chart: {
-                        type: 'line'
+                        type: 'spline'
                     },
                     plotOptions: {
                         series: {
@@ -74,7 +74,7 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
                     });
 
                     $scope.chartSeries = [{
-                        "name": "Somename",
+                        "name": "Execution Time",
                         "data": $scope.drasl
                     }];
 
