@@ -40,7 +40,7 @@ router.get('/key/:key_id/execution_time', function(req, res) {
 
     Entry.find({
         key: key_id
-    }, 'execution_time', function(err, entries) {
+    }, function(err, entries) {
         if (err) {
             console.error(err);
             res.send(404);
