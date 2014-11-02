@@ -1,5 +1,12 @@
-<h1>Main</h1>
+<h3>Keys that have sent execution times via kodemon</h3>
 
-<ul ng-repeat="key in listOfKeys">
-	<a ng-click="buttonClicked(key)">{{key}}</a>
-</ul>
+<table>
+	<thead>
+		<th>Number</th>
+		<th>Key</th>
+	</thead>
+<tr ng-repeat="key in listOfKeys">
+	<td>{{$index + 1}}</td>
+	<td><a ng-click="buttonClicked(key)">{{key}}</a></td>
+</tr>
+</table>

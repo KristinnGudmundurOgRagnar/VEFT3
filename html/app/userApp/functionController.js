@@ -6,10 +6,10 @@ function($scope, $location, $routeParams, $http, apiRoute){
 	$scope.executionTimes = [];
 
 	$scope.submitTimeRange = function(){
-		var start = new Date($scope.startTime);
-		var end = new Date($scope.endTime);
-		console.log("StartTime: " + $scope.startTime);
-		console.log("EndTime: " + $scope.endTime);
+		var start = new Date();
+		var end = new Date();
+		start.setUTCSeconds($scope.startTime);
+		end.setUTCSeconds($scope.endTime);
 
 		console.log("StartTime: " + start);
 		console.log("EndTime: " + end);
@@ -22,6 +22,7 @@ function($scope, $location, $routeParams, $http, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
+                setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
             }
@@ -40,6 +41,7 @@ function($scope, $location, $routeParams, $http, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
+                //setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
             }
@@ -51,6 +53,17 @@ function($scope, $location, $routeParams, $http, apiRoute){
 
 	$scope.getAll();
 
+	function setExecutionTimeFormat(){
+		for(var i = 0; i < $scope.executionTimes.length; i++){
+			var newTime = new Date();
+			newTime.setUTCSeconds($scope.executionTimes[i].timestamp);
+			newTime = newTime.toLocaleString();
+
+			$scope.executionTimes[i].timestamp = newTime;
+		}
+	}
+
+	
 	$scope.chartSeries = [
 		{"name": "Some data", "data": [1, 2, 4, 7, 3]},
 	];
@@ -77,5 +90,4 @@ function($scope, $location, $routeParams, $http, apiRoute){
 		size: {}
 	}
 
-	
 }]);
