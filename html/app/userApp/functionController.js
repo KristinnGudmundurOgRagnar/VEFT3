@@ -46,11 +46,11 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
                 $scope.drasl = [];
                 angular.forEach(data, function(key, value) {
                 	$scope.drasl.push(data[value].execution_time);
+                });
+                $scope.chartSeries = [{"name": "Some data", "data": $scope.drasl},];
+				alert(JSON.stringify($scope.chartSeries));
+				console.log(JSON.stringify($scope.chartSeries));
 
-                })
-                $scope.chartSeries = [
-		{"name": "Some data", "data": $scope.drasl},
-	];
                 //setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
@@ -62,7 +62,6 @@ function($scope, $location, $routeParams, $http, $filter, apiRoute){
 	};
 
 	$scope.getAll();
-	$scope.apply;
 
 	function setExecutionTimeFormat(){
 		for(var i = 0; i < $scope.executionTimes.length; i++){
