@@ -71,7 +71,7 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime', function(req, res)
         $orderby: {
             timestamp: -1
         },
-    }, 'key', function(err, entries) {
+    }, 'key timestamp execution_time', function(err, entries) {
         if (err)
             res.send(500, err);
 
