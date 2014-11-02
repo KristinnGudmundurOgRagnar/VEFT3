@@ -1,13 +1,21 @@
 <h2>Execution times for key: {{currentKey}}</h2>
+<label>Search for execution times in range:</label>
 <form name="timeRangeForm" ng-submit="submitTimeRange()">
-	<input type="number"/ ng-model="startTime" required placeholder="Start time">
-	<input type="number"/ ng-model="endTime" required placeholder="End time">
+	<input type="number" ng-model="startTime" required placeholder="Start time">
+	<input type="number" ng-model="endTime" required placeholder="End time">
 
 	<input type="submit" value="Submit" />
 </form>
 <button ng-click="getAll()">Get all execution times</button>
 
 
-<ul ng-repeat="time in executionTimes">
-	<li>{{time.execution_time}}</li>
-</ul>
+<table>
+	<thead>
+		<th>TimeStamp</th>
+		<th>Execution time</th>
+	</thead>
+	<tr ng-repeat="time in executionTimes">
+		<td>{{time.timeStamp}}</td>
+		<td>{{time.execution_time}}</td>
+	</tr>
+</table>
