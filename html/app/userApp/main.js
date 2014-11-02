@@ -11,7 +11,7 @@ userApp.config(["$routeProvider",
         $routeProvider.when("/", {
             templateUrl: "views/main.html",
             controller: "mainController"
-        }).when("/:key", {
+        }).when("/:key/", {
             templateUrl: "views/function.html",
             controller: "functionController"
         }).otherwise({

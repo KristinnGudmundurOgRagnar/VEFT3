@@ -15,9 +15,6 @@
   <!-- build:css({.tmp,app}) styles/main.css -->
   <link rel="stylesheet" href="styles/main.css">
   <!-- endbuild -->
-</head>
-<body ng-app="userApp">
-
 
   <!-- build:js scripts/vendor.js -->
   <!-- bower:js -->
@@ -34,11 +31,13 @@
   <!-- endbuild -->
   <!-- build:js({.tmp,app}) scripts/scripts.js -->
   <script src="userApp/main.js" type="text/javascript"></script>
-  <script src="userApp/mainController.js" type="text/javascript"></script>
   <script src="userApp/functionController.js" type="text/javascript"></script>
   <script src="userApp/config.js" type="text/javascript"></script>
-  <!-- endbuild -->
+  <script src="userApp/mainController.js" type="text/javascript"></script>
 
+  <!-- endbuild -->
+</head>
+<body ng-app="userApp">
     <h1>Hello user</h1>
     <div ng-view>
     </div>
