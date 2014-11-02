@@ -1,103 +1,98 @@
 userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute",
-function($scope, $location, $routeParams, $http, $filter, apiRoute){
-	$scope.currentKey = $routeParams.key;
-	$scope.startTime;
-	$scope.endTime;
-	$scope.executionTimes = [];
+    function($scope, $location, $routeParams, $http, $filter, apiRoute) {
+        $scope.currentKey = $routeParams.key;
+        $scope.startTime;
+        $scope.endTime;
+        $scope.executionTimes = [];
 
-    $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss')
+        $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss')
 
-	$scope.submitTimeRange = function(){
-		var start = new Date();
-		var end = new Date();
-		start.setUTCSeconds($scope.startTime);
-		end.setUTCSeconds($scope.endTime);
+        $scope.submitTimeRange = function() {
+            var start = new Date();
+            var end = new Date();
+            start.setUTCSeconds($scope.startTime);
+            end.setUTCSeconds($scope.endTime);
 
-		console.log("StartTime: " + start);
-		console.log("EndTime: " + end);
+            console.log("StartTime: " + start);
+            console.log("EndTime: " + end);
 
 
-		$http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/' + $scope.startTime + '/' + $scope.endTime).
-        success(function(data, status, headers, config) {
-            console.log("Info: got times");
-            if (status == 200) {
-                console.log("Info: The times exist");
-                console.log("Info: times are: " + JSON.stringify(data));
-                $scope.executionTimes = data;
-                setExecutionTimeFormat();
-            } else {
-                console.log("Info: Times empty");
+            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/' + $scope.startTime + '/' + $scope.endTime).
+            success(function(data, status, headers, config) {
+                console.log("Info: got times");
+                if (status == 200) {
+                    console.log("Info: The times exist");
+                    console.log("Info: times are: " + JSON.stringify(data));
+                    $scope.executionTimes = data;
+                    setExecutionTimeFormat();
+                } else {
+                    console.log("Info: Times empty");
+                }
+            }).
+            error(function(data, status, headers, config) {
+                console.log("Error: unable to connect");
+            });
+        };
+
+        $scope.drawChart = function(theData) {
+            $scope.chartConfig = {
+                options: {
+                    chart: {
+                        type: 'line'
+                    },
+                    plotOptions: {
+                        series: {
+                            stacking: ''
+                        }
+                    }
+                },
+                series: theData,
+                title: {
+                    text: 'Execution Times'
+                },
+                credits: {
+                    enabled: true
+                },
+                loading: false,
+                size: {}
             }
-        }).
-        error(function(data, status, headers, config) {
-            console.log("Error: unable to connect");
-        });
-	};
-	$scope.chartSeries = [];
-	$scope.getAll = function(){
-		console.log("Get all");
-		$http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
-        success(function(data, status, headers, config) {
-            console.log("Info: got times");
-            if (status == 200) {
-                console.log("Info: The times exist");
-                console.log("Info: times are: " + JSON.stringify(data));
-                $scope.executionTimes = data;
-                $scope.drasl = [];
-                angular.forEach(data, function(key, value) {
-                	$scope.drasl.push(data[value].execution_time);
-                });
-                $scope.chartSeries = [{"name": "Some data", "data": $scope.drasl},];
-				alert(JSON.stringify($scope.chartSeries));
-				console.log(JSON.stringify($scope.chartSeries));
+        }
 
-                //setExecutionTimeFormat();
-            } else {
-                console.log("Info: Times empty");
-            }
-        }).
-        error(function(data, status, headers, config) {
-            console.log("Error: unable to connect");
-        });
-	};
+        $scope.getAll = function() {
+            console.log("Get all");
+            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
+            success(function(data, status, headers, config) {
+                console.log("Info: got times");
+                if (status == 200) {
+                    console.log("Info: The times exist");
+                    console.log("Info: times are: " + JSON.stringify(data));
+                    $scope.executionTimes = data;
 
-	$scope.getAll();
+                    $scope.drasl = [];
+                    angular.forEach(data, function(key, value) {
+                        $scope.drasl.push(data[value].execution_time);
+                    });
 
-	function setExecutionTimeFormat(){
-		for(var i = 0; i < $scope.executionTimes.length; i++){
-			var newTime = new Date();
-			newTime.setUTCSeconds($scope.executionTimes[i].timestamp);
-			newTime = newTime.toLocaleString();
+                    $scope.chartSeries = [{
+                        "name": "Somename",
+                        "data": $scope.drasl
+                    }];
 
-			$scope.executionTimes[i].timestamp = newTime;
-		}
-	}
+                    $scope.drawChart($scope.chartSeries);
 
-	/*
-	$scope.chartSeries = [
-		{"name": "Some data", "data": [1,2]},
-	];
-*/
-	$scope.chartConfig = {
-		options: {
-			chart: {
-				type: 'line'
-			},
-			plotOptions: {
-				series: {
-					stacking: ''
-				}
-			}
-		},
-		series: $scope.chartSeries,
-		title: {
-			text: 'Execution Times'
-		},
-		credits: {
-			enabled: true
-		},
-		loading: false,
-		size: {}
-	}
+                } else {
+                    console.log("Info: Times empty");
+                }
+            }).
+            error(function(data, status, headers, config) {
+                console.log("Error: unable to connect");
+            });
+        };
 
-}]);
+        $scope.getAll();
+
+
+
+
+    }
+]);
