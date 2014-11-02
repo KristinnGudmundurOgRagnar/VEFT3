@@ -1,48 +1,46 @@
 <h2>Execution times for key: {{currentKey}}</h2>
-<label>Search for execution times in range:</label>
+
 <form role="form" name="timeRangeForm" ng-submit="submitTimeRange()" >
-	<input type="number" ng-model="startTime" required placeholder="Start time">
-	<input type="number" ng-model="endTime" required placeholder="End time">
-
-	<button type="submit" class="btn btn-default">Submit</button>
+	<label>Search for execution times in range:</label>
+	<div class="form-group">
+		<!--<input type="number" ng-model="startTime" required placeholder="Start time">
+		<input type="number" ng-model="endTime" required placeholder="End time">-->
+		<input type="date" name="date" id="date" value="" />
+		<input id="spinner" name="spinner" value="{{currentTime}}" />
+		<button type="submit" class="btn btn-default">Submit</button>
+	</div>
 </form>
-<button ng-click="getAll()">Get all execution times</button>
-<input type="date" name="date" id="date" value="" />
-<input id="spinner" name="spinner" value="{{currentTime}}" />
 
-<table class="table table-striped">
-	<thead>
-		<th>TimeStamp</th>
-		<th>Execution time</th>
-
-<ul ng-repeat="time in executionTimes">
-	<li>{{time.execution_time}}</li>
-</ul>
-
-	</thead>
-	<tr ng-repeat="time in executionTimes">
-		<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-		<td>{{time.execution_time}}</td>
-	</tr>
-</table>
-
-<div>
-	<highchart id="chart1" config="chartConfig" class="span9" ></highchart>
+<div class="form-group">
+	<button ng-click="getAll()">Get all execution times</button>
+	<!--<input type="date" name="date" id="date" value="" />
+	<input id="spinner" name="spinner" value="{{currentTime}}" />-->
+<div class="row">
+	<div class="col-md-4">
+		<table class="table table-striped">
+			<thead>
+				<th>TimeStamp</th>
+				<th>Execution time</th>
+			</thead>
+			<tr ng-repeat="time in executionTimes">
+				<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+				<td>{{time.execution_time}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-md-7 holycrap">
+		<highchart id="chart1" config="chartConfig" ></highchart>
+	</div>
 </div>
-
-  <script>
-  $('#date').datepicker({
-      dateFormat: 'dd-mm-yy'
-  });
-  (function() {
-      var elem = document.createElement('input');
-      elem.setAttribute('type', 'date');
-
-      if (elem.type === 'text') {
-          $('#date').datepicker();
-      }
-  })();
-  </script>
-
-
-
+<script>
+$('#date').datepicker({
+dateFormat: 'dd-mm-yy'
+});
+(function() {
+var elem = document.createElement('input');
+elem.setAttribute('type', 'date');
+if (elem.type === 'text') {
+$('#date').datepicker();
+}
+})();
+</script>
