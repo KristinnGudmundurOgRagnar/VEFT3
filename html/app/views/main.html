@@ -1,6 +1,12 @@
-<h1>Main</h1>
+<h3>Keys that have sent execution times via kodemon</h3>
 
-<select class="selectpicker show-menu-arrow" data-ng-model="selectedKey">
-	<option ng-repeat="key in listOfKeys">{{key}}</option>
-</select>
-<a ng-click="buttonClicked()">View</a>
+<table>
+	<thead>
+		<th>Number</th>
+		<th>Key</th>
+	</thead>
+<tr ng-repeat="key in listOfKeys">
+	<td>{{$index + 1}}</td>
+	<td><a ng-click="buttonClicked(key)">{{key}}</a></td>
+</tr>
+</table>
