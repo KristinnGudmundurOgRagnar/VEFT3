@@ -26,8 +26,8 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
         });
 
 
-        $scope.buttonClicked = function() {
-            $location.path("/" + $scope.selectedKey + "/");
+        $scope.buttonClicked = function(key) {
+            $location.path("/" + key + "/");
         };
 
         //$scope.apply;

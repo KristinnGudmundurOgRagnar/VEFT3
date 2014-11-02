@@ -1,6 +1,10 @@
 <h1>Main</h1>
-
-<select class="selectpicker show-menu-arrow" data-ng-model="selectedKey">
-	<option ng-repeat="key in listOfKeys">{{key}}</option>
-</select>
-<a ng-click="buttonClicked()">View</a>
+<div class=".row">
+	<div class=".col-md-4">
+		<ul class="list-unstyled">
+			<li ng-repeat="key in listOfKeys"><a ng-click="buttonClicked(key)">{{key}}</a></li>
+		</ul>
+	</div>
+	<div class=".col-md-4"></div>
+	<div class=".col-md-4"></div>
+</div>
