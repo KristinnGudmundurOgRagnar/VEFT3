@@ -4,7 +4,10 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
 
     function($scope, $location, $http, apiRoute) {
         //alert("Ready to work");
-        //
+
+
+        $scope.listOfKeys = [];
+        $scope.selectedKey = "";
 
         $http.get(apiRoute.apiEndpoint + '/api/keys').
         success(function(data, status, headers, config) {
@@ -13,6 +16,7 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
                 console.log("Info: The keys exist");
                 console.log("Info: keys are: " + JSON.stringify(data));
                 $scope.listOfKeys = data;
+                $scope.selectedKey = $scope.listOfKeys[0];
             } else {
                 console.log("Info: Keys empty");
             }
@@ -21,11 +25,12 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
             console.log("Error: unable to connect");
         });
 
-        $scope.buttonClicked = function(key) {
-            $location.path("/" + key + "/");
+
+        $scope.buttonClicked = function() {
+            $location.path("/" + $scope.selectedKey + "/");
         };
 
-        $scope.apply;
+        //$scope.apply;
 
     }
 ]);
