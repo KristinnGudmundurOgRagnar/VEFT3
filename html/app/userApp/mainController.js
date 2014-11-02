@@ -3,6 +3,7 @@ function($scope, $location){
 	//alert("Ready to work");
 
 	$scope.buttonClicked = function(){
-		$location.path("/HERP");
-	}
+		console.log("Changing location");
+		$location.path("/HERP/");
+	};
 }]);
