@@ -1,5 +1,4 @@
 var userApp = angular.module("userApp", [
-    'ngCookies',
     'ngResource',
     'ngSanitize',
     'ngRoute',

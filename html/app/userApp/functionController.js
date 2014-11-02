@@ -1,9 +1,11 @@
-userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "apiRoute",
-function($scope, $location, $routeParams, $http, apiRoute){
+userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute",
+function($scope, $location, $routeParams, $http, $filter, apiRoute){
 	$scope.currentKey = $routeParams.key;
 	$scope.startTime;
 	$scope.endTime;
 	$scope.executionTimes = [];
+
+    $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss')
 
 	$scope.submitTimeRange = function(){
 		var start = new Date();
