@@ -41,7 +41,7 @@ function($scope, $location, $routeParams, $http, apiRoute){
                 console.log("Info: The times exist");
                 console.log("Info: times are: " + JSON.stringify(data));
                 $scope.executionTimes = data;
-                setExecutionTimeFormat();
+                //setExecutionTimeFormat();
             } else {
                 console.log("Info: Times empty");
             }

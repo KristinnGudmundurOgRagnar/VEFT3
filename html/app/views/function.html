@@ -8,14 +8,14 @@
 </form>
 <button ng-click="getAll()">Get all execution times</button>
 
-
 <table>
 	<thead>
 		<th>TimeStamp</th>
 		<th>Execution time</th>
+
 	</thead>
 	<tr ng-repeat="time in executionTimes">
-		<td>{{time.timestamp}}</td>
+		<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
 		<td>{{time.execution_time}}</td>
 	</tr>
 </table>
