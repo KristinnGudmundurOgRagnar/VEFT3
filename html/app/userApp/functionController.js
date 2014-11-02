@@ -6,10 +6,10 @@ function($scope, $location, $routeParams, $http, apiRoute){
 	$scope.executionTimes = [];
 
 	$scope.submitTimeRange = function(){
-		var start = new Date($scope.startTime);
-		var end = new Date($scope.endTime);
-		console.log("StartTime: " + $scope.startTime);
-		console.log("EndTime: " + $scope.endTime);
+		var start = new Date();
+		var end = new Date();
+		start.setUTCSeconds($scope.startTime);
+		end.setUTCSeconds($scope.endTime);
 
 		console.log("StartTime: " + start);
 		console.log("EndTime: " + end);
