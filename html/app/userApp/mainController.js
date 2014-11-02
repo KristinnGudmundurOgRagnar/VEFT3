@@ -1,9 +1,9 @@
 userApp.controller("mainController", ["$scope", "$location",
 function($scope, $location){
-	//alert("Ready to work");
+	//TODO: Get this list from the API
+	$scope.listOfKeys = ["key1", "key2", "key3"];
 
-	$scope.buttonClicked = function(){
-		console.log("Changing location");
-		$location.path("/HERP/");
+	$scope.buttonClicked = function(key){
+		$location.path("/" + key + "/");
 	};
 }]);
