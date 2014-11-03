@@ -1,134 +1,161 @@
-<h2>Execution times for key: {{currentKey}}</h2>
-<form role="form" name="timeRangeForm" ng-submit="submitTimeRange()" >
-	<label>Search for execution times in range:</label>
-	<div class="form-group">
-		<!--<input type="number" ng-model="startTime" required placeholder="Start time">
-		<input type="number" ng-model="endTime" required placeholder="End time">-->
-		<div class="form-group">
-			<label for="startDate">Start date/time:</label>
-			<input type="date" ng-model="startDate" name="startDate" id="startDate" value="{{ currentTime | date:'yyyy-dd-mm' }}" />
-			<input id="startTime" ng-model="startTime" value="{{ currentTime | date:'HH:mm:ss' }}">
-		</div>
-		<div class="form-group">
-			<label for="endDate">End date/time:</label>
-			<input type="date" ng-model="endDate" name="endDate" id="endDate" value="{{ currentTime | date:'yyyy-dd-mm' }}" />
-			<input id="endTime" ng-model="endTime" value="{{ currentTime | date:'HH:mm:ss' }}" />
-		</div>
-		<button type="submit" class="btn btn-default">Submit</button>
+<div class="row">
+	<div class="col-md-12 text-center">
+		<h2>Execution times for key: {{currentKey}}</h2>
 	</div>
-</form>
-<div class="form-group">
-	<p>-- 	OR --</p>
-	<button ng-click="getAll()">Get all execution times</button>
-	<!--<input type="date" name="date" id="date" value="" />
-	<input id="spinner" name="spinner" value="{{currentTime}}" />-->
-	<div class="row">
-		<div class="col-md-4">
-			<div>
-				Limited to 50 lines per page
-			</div>
-			<table class="table table-striped">
-				<thead>
-					<th>TimeStamp</th>
-					<th>Execution time</th>
-				</thead>
-				<tr ng-repeat="time in executionTimes">
-					<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
-					<td>{{time.execution_time}}</td>
-				</tr>
-			</table>
-		</div>
-		<div class="col-md-7">
-			<div class="holycrap">
-				<highchart id="chart1" config="chartConfig" ></highchart>
+</div>
+
+<div class="row">
+	<div class="col-md-4 text-center">
+		<div style="margin-top: 25%;">
+			<button class="btn btn-default" ng-click="getAll()">Get all execution times</button>
+			<div class="checkbox">
+				<label>
+					<input type="checkbox"> Update every 2 sec
+				</label>
 			</div>
 		</div>
 	</div>
-	<script>
+	<div class="col-md-8">
+		<form class="form-horizontal" role="form" name="timeRangeForm" ng-submit="submitTimeRange()">
+			<div class="form-group">
+				<label class="col-sm-offset-2 col-sm-5">Search for execution times in range</label>
+			</div>
+			<div class="form-group">
+				
+				<div class="col-sm-offset-2 col-sm-2">
+					<label>Start</label>
+				</div>
+				<div class="col-sm-offset-1 col-sm-2">
+					<label>End</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Date</label>
+				<div class="col-sm-3">
+					<input id="startDate" ng-model="startDate" name="startDate" class="form-control" value="{{ currentTime | date:'yyyy-dd-mm' }}" placeholder="Date">
+				</div>
+				<div class="col-sm-3">
+					<input id="endDate" ng-model="endDate" name="endDate"  class="form-control" value="{{ currentTime | date:'yyyy-dd-mm' }}" placeholder="Date">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Time</label>
+				<div class="col-sm-3">
+					<input id="startTime" ng-model="startTime" name="startTime" value="{{ currentTime | date:'HH:mm:ss' }}" class="form-control" placeholder="Time">
+				</div>
+				<div class="col-sm-3">
+					<input id="endTime" ng-model="endTime" name="endTime" value="{{ currentTime | date:'HH:mm:ss' }}" class="form-control" placeholder="Time">
+				</div>
+			</div>
 
-
-	$(function() {
-	    $("#startDate").datepicker({
-	        defaultDate: "+1w",
-	        changeMonth: true,
-	        changeYear: true,
-	        numberOfMonths: 3,
-	        dateFormat: "yy-mm-dd",
-	        onClose: function(selectedDate) {
-	            $("#endDate").datepicker("option", "minDate", selectedDate);
-	        }
-	    });
-
-	    $("#endDate").datepicker({
-	        defaultDate: "+1w",
-	        changeMonth: true,
-	        changeYear: true,
-	        numberOfMonths: 3,
-	        dateFormat: "yy-mm-dd",
-	        onClose: function(selectedDate) {
-	            $("#startDate").datepicker("option", "maxDate", selectedDate);
-	        }
-	    });
-	});
-
-	(function() {
-	    var elem = document.createElement('input');
-	    elem.setAttribute('type', 'date');
-	    if (elem.type === 'text') {
-	        $('#startDate').datepicker();
-	        $('#endDate').datepicker();
-	    }
-	})();
-	
-	// For the timespinner
-	/*$.widget("ui.timespinner", $.ui.spinner, {
-	    options: {
-	        // seconds
-	        step: 60 * 1000,
-	        // hours
-	        page: 60
-	    },
-	    _parse: function(value) {
-	        if (typeof value === "string") {
-	            // already a timestamp
-	            if (Number(value) == value) {
-	                return Number(value);
-	            }
-	            return +Globalize.parseDate(value);
-	        }
-	        return value;
-	    },
-	    _format: function(value) {
-	        return Globalize.format(new Date(value), "t");
-	    }
-	});
-	
-
-	$(function() {
-		Globalize.culture('is-IS');
-	    $("#startTime").timespinner({showSeconds: true});
-	    $("#endTime").timespinner({showSeconds: true});
-	    //var current = $("#spinner").timespinner("value");
-	    //$("#spinner").timespinner("value", current);
-	});*/
-
-	// Let div chart follow scroll
-	$(function() {
-	    var $sidebar = $(".holycrap"),
-	        $window = $(window),
-	        offset = $sidebar.offset(),
-	        topPadding = 15;
-
-	    $window.scroll(function() {
-	        if ($window.scrollTop() > offset.top) {
-	            $sidebar.stop().animate({
-	                marginTop: $window.scrollTop() - offset.top + topPadding
-	            }, 'medium');
-	        } else {
-	            $sidebar.stop().animate({
-	                marginTop: 0
-	            }, 'medium');
-	        }
-	    });
-	});
-	</script>
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-2">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!--<input type="date" name="date" id="date" value="" />
+<input id="spinner" name="spinner" value="{{currentTime}}" />-->
+<div class="row">
+	<div class="col-md-4">
+		<div class="text-center bold">
+			<strong>Limited to 25 lines per page</strong>
+		</div>
+		<table class="table table-striped">
+			<thead>
+				<th>TimeStamp</th>
+				<th>Execution time</th>
+			</thead>
+			<tr ng-repeat="time in executionTimes">
+				<td>{{time.timestamp * 1000 | date:'dd-MM-yyyy HH:mm:ss'}}</td>
+				<td>{{time.execution_time}}</td>
+			</tr>
+		</table>
+	</div>
+	<div class="col-md-7">
+		<div class="holycrap">
+			<highchart id="chart1" config="chartConfig" ></highchart>
+		</div>
+	</div>
+</div>
+<script>
+$(function() {
+    $("#startDate").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 2,
+        dateFormat: "yy-mm-dd",
+        onClose: function(selectedDate) {
+            $("#endDate").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#endDate").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 2,
+        dateFormat: "yy-mm-dd",
+        onClose: function(selectedDate) {
+            $("#startDate").datepicker("option", "maxDate", selectedDate);
+        }
+    });
+});
+(function() {
+    var elem = document.createElement('input');
+    elem.setAttribute('type', 'date');
+    if (elem.type === 'text') {
+        $('#startDate').datepicker();
+        $('#endDate').datepicker();
+    }
+})();
+// For the timespinner
+/*$.widget("ui.timespinner", $.ui.spinner, {
+options: {
+// seconds
+step: 60 * 1000,
+// hours
+page: 60
+},
+_parse: function(value) {
+if (typeof value === "string") {
+// already a timestamp
+if (Number(value) == value) {
+return Number(value);
+}
+return +Globalize.parseDate(value);
+}
+return value;
+},
+_format: function(value) {
+return Globalize.format(new Date(value), "t");
+}
+});
+$(function() {
+	Globalize.culture('is-IS');
+$("#startTime").timespinner({showSeconds: true});
+$("#endTime").timespinner({showSeconds: true});
+//var current = $("#spinner").timespinner("value");
+//$("#spinner").timespinner("value", current);
+});*/
+// Let div chart follow scroll
+$(function() {
+    var $sidebar = $(".holycrap"),
+        $window = $(window),
+        offset = $sidebar.offset(),
+        topPadding = 15;
+    $window.scroll(function() {
+        if ($window.scrollTop() > offset.top) {
+            $sidebar.stop().animate({
+                marginTop: $window.scrollTop() - offset.top + topPadding
+            }, 'medium');
+        } else {
+            $sidebar.stop().animate({
+                marginTop: 0
+            }, 'medium');
+        }
+    });
+});
+</script>

@@ -47,7 +47,7 @@ router.get('/key/:key_id/execution_time/page/:number', function(req, res) {
         }
     }, {}, {
         skip: parseInt(req.params.number),
-        limit: 50
+        limit: 25
     }, function(err, entries) {
         if (err) {
             console.error(err);
