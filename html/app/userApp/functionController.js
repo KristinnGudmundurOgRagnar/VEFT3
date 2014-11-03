@@ -1,30 +1,30 @@
 userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute",
     function($scope, $location, $routeParams, $http, $filter, apiRoute) {
         $scope.currentKey = $routeParams.key;
-        $scope.startTime;
-        $scope.endTime;
+        //$scope.startTime;
+        //$scope.endTime;
         $scope.executionTimes = [];
 
-        $scope.currentTime = $filter('date')(new Date(), 'HH:mm:ss')
+        $scope.currentTime = new Date();
 
         $scope.submitTimeRange = function() {
-            var start = new Date();
-            var end = new Date();
-            start.setUTCSeconds($scope.startTime);
-            end.setUTCSeconds($scope.endTime);
 
-            console.log("StartTime: " + start);
-            console.log("EndTime: " + end);
+            var theStartDate = $scope.startDate;
+            var theEndDate = $scope.endDate;
+            var theStartTime = $scope.startTime;
+            var theEndTime = $scope.endTime;
 
+            var start = new Date(theStartDate + "T" + theStartTime+"Z").getTime() / 1000;
+            var end = new Date(theEndDate + "T" + theEndTime+"Z").getTime() / 1000;
 
-            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/' + $scope.startTime + '/' + $scope.endTime).
+            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/' + $scope.startTime + '/' + $scope.endTime + '/page/0').
             success(function(data, status, headers, config) {
                 console.log("Info: got times");
                 if (status == 200) {
                     console.log("Info: The times exist");
                     console.log("Info: times are: " + JSON.stringify(data));
                     $scope.executionTimes = data;
-                    setExecutionTimeFormat();
+                    //setExecutionTimeFormat();
                 } else {
                     console.log("Info: Times empty");
                 }
@@ -58,9 +58,9 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             }
         }
 
-        $scope.getAll = function() {
+        $scope.getAll = function(page) {
             console.log("Get all");
-            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
+            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/page/'+page).
             success(function(data, status, headers, config) {
                 console.log("Info: got times");
                 if (status == 200) {
@@ -89,10 +89,6 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             });
         };
 
-        $scope.getAll();
-
-
-
-
+        $scope.getAll(0);
     }
 ]);

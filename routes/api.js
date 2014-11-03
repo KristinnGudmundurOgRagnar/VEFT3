@@ -35,11 +35,19 @@ router.get('/keys', function(req, res) {
 /* 
  * List all execution times for a given key.
  */
-router.get('/key/:key_id/execution_time', function(req, res) {
+router.get('/key/:key_id/execution_time/page/:number', function(req, res) {
     var key_id = req.params.key_id;
 
     Entry.find({
-        key: key_id
+        $query: {
+            key: key_id
+        },
+        $orderby: {
+            timestamp: -1
+        }
+    }, {}, {
+        skip: parseInt(req.params.number),
+        limit: 50
     }, function(err, entries) {
         if (err) {
             console.error(err);
@@ -54,7 +62,7 @@ router.get('/key/:key_id/execution_time', function(req, res) {
 /*
  * List all execution times, for a given key on a given time range.
  */
-router.get('/key/:key_id/execution_time/:startTime/:endTime', function(req, res) {
+router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', function(req, res) {
     var key_id = req.params.key_id;
     var startTime = parseInt(req.params.startTime);
     var endTime = parseInt(req.params.endTime);
@@ -73,7 +81,7 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime', function(req, res)
         },
     }, 'key timestamp execution_time', function(err, entries) {
         if (err)
-            res.send(500, err);
+            res.status(500).send(err)
 
         res.send(entries);
     });
