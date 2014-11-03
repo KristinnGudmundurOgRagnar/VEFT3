@@ -4,6 +4,8 @@ from random import randint
 
 @kodemon
 def calculate():
-    time.sleep(randint(2,9))
+	bla = randint(2,9)
+	print bla
+	time.sleep(bla)
 
 calculate()
