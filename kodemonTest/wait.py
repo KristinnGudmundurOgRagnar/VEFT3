@@ -1,5 +1,6 @@
 from kodemon import kodemon
 import time
+import sys
 from random import randint
 
 @kodemon
@@ -8,4 +9,10 @@ def calculate():
 	print bla
 	time.sleep(bla)
 
-calculate()
+if (len(sys.argv) > 1):
+	iterations = int(sys.argv[1])
+else:
+	iterations = 1
+
+for i in range(0,iterations):
+	calculate()
