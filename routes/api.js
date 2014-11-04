@@ -56,13 +56,19 @@ router.get('/key/:key_id/execution_time/page/:number', function(req, res) {
             res.status(404).send(err);
         }
 
-        console.log(entries);
+        //console.log(entries);
         res.json(entries);
     });
 });
 
 /*
  * List all execution times, for a given key on a given time range.
+ *
+ * Usage:
+ * GET /key/<key_id>/execution_time/<startTime>/<endTime>/page/<number>
+ * 
+ * Example:
+ * /key/somefile.py-someFunction/
  */
 router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', function(req, res) {
     var key_id = req.params.key_id;
@@ -90,12 +96,30 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', funct
             if (err) {
                 res.status(404).send(err);
             }
-
+            //console.log(entries);
             res.json(entries);
         });
 });
 
 
+/*
+ * Get total queries from table, queries from 
+ * given key_id and queries from given key_id and
+ * startTime and endTime
+ * 
+ * Usage:
+ * GET /total/
+ * GET /total/<key_id>/
+ * GET /total/<key_id>/<startTime>/<endTime>
+ * 
+ * Example:
+ * /total/
+ * /total/somefile.py-someFunction/
+ * /total/somefile.py-someFunction/1000000/2000000
+ * 
+ * Can be run without <key_id> and <startTime> and <endTime>
+ * together.
+ */
 router.get('/total/:key_id?/:startTime?/:endTime?', function(req, res) {
     var key_id = req.params.key_id;
     var startTime = parseInt(req.params.startTime);
@@ -119,33 +143,12 @@ router.get('/total/:key_id?/:startTime?/:endTime?', function(req, res) {
         query = Entry.find({});
     }
 
-
-    //var query = Entry.find(queryString);
-
     query.count(function(err, count) {
         if (err)
             res.send(err);
+        //console.log(entries);
         res.json(count);
     })
-
-    /*var countThis = (startTime ? Entry.find({
-            $query: {
-                key: key_id,
-                timestamp: {
-                    $gte: startTime,
-                    $lte: endTime
-                }
-            }
-        }) :
-        Entry.find(getValue));
-
-    countThis.count(countThis, function(err, entries) {
-        console.log('Count is ' + entries);
-        if (err) {
-            res.status(404).send(err);
-        }
-        res.json(entries);
-    });*/
 });
 
 module.exports = router;

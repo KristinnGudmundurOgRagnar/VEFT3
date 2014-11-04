@@ -13,17 +13,20 @@ userApp.controller("functionController", [
         $scope.executionTimes = [];
         $scope.getTotalForKey = 0;
         $scope.totalItems;
+        $scope.chartSeries = [];
+        var prufa = true;
+        var ssDate, ssTime, eeDate, eeTime;
 
         $scope.submitTimeRange = function(sDate, sTime, eDate, eTime, page) {
 
             //console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
             //console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
-
+            prufa = false;
             var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
             var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
 
             $scope.drasl = [];
-            executionFactory.getCurrentKeyWithRange($scope.currentKey, 0, start, end).then(
+            executionFactory.getCurrentKeyWithRange($scope.currentKey, page, start, end).then(
                 function(data, status, headers, config) {
                     $scope.executionTimes = data;
                     $scope.getTotal(start, end);
@@ -66,22 +69,28 @@ userApp.controller("functionController", [
         }
 
         $scope.getCurrentKey = function(mypage) {
-            $scope.drasl = [];
+            $scope.listForChart = [];
             $scope.getTotal(-1, -1);
             executionFactory.getCurrentKey($scope.currentKey, mypage).then(
                 function(data) {
                     $scope.executionTimes = data;
 
                     data.forEach(function(value) {
-                        $scope.drasl.push(value.execution_time);
+                        $scope.listForChart.push(value.execution_time);
                     });
                 });
 
             $scope.chartSeries = [{
                 "name": "Execution Time",
-                "data": $scope.drasl
+                "data": $scope.listForChart
             }];
+        }
+
+        $scope.GetAllEx = function() {
+            $scope.getCurrentKey(0);
             $scope.drawChart($scope.chartSeries);
+            $scope.setPage(1);
+            prufa = true;
         }
 
 
@@ -96,6 +105,8 @@ userApp.controller("functionController", [
         }
 
         $scope.getCurrentKey(0);
+        $scope.drawChart($scope.chartSeries);
+
         $scope.maxSize = 4;
         $scope.bigTotalItems = 0;
         $scope.bigCurrentPage = 1;
@@ -106,12 +117,40 @@ userApp.controller("functionController", [
         };
 
         $scope.pageChanged = function() {
-            console.log('Page changed to: ' + $scope.bigCurrentPage);
-            $scope.getCurrentKey($scope.itemPerPage*($scope.bigCurrentPage-1))
+            //console.log('Page changed to: ' + $scope.bigCurrentPage);
+            if (prufa)
+                $scope.getCurrentKey($scope.itemPerPage * ($scope.bigCurrentPage - 1))
+            else {
+                $scope.submitTimeRange($scope.startDate, $scope.startTime, $scope.endDate, $scope.endTime, $scope.itemPerPage * ($scope.bigCurrentPage - 1));
+            }
+            $scope.drawChart($scope.chartSeries);
         };
 
         $scope.$watch('getTotalForKey', function(newvalue, oldvalue) {
             $scope.bigTotalItems = newvalue;
-        })
+        });
+
+        // Here comes the timer for updating the view
+        var timer;
+        $scope.timerCtrl = function($scope, $filter, $interval) {
+            $scope.$watch("timerCheck", function(n, o) {
+                var trues = $filter("filter")(n, {
+                    val: true
+                })
+                if (trues == true) {
+                    timer = $interval(function() {
+                        $scope.getCurrentKey(0);
+                        $scope.drawChart($scope.chartSeries);
+                        $scope.setPage(1);
+                    }, 10000);
+                } else {
+                    if (angular.isDefined(timer)) {
+                        $interval.cancel(timer);
+                        timer = undefined;
+                    }
+                }
+            }, true);
+        }
+
     }
 ]);
