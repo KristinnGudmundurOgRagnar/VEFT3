@@ -23,6 +23,5 @@
   },
   "_source": "git://github.com/brandonaaron/jquery-mousewheel.git",
   "_target": "~3.1.12",
-  "_originalSource": "jquery-mousewheel",
-  "_direct": true
+  "_originalSource": "jquery-mousewheel"
 }

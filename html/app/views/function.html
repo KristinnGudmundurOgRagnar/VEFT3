@@ -32,19 +32,19 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">Date</label>
 				<div class="col-sm-3">
-					<input id="startDate" ng-model="startDate" name="startDate" class="form-control" value="{{ currentTime | date:'yyyy-dd-mm' }}" placeholder="Date">
+					<input id="startDate" ng-model="startDate" name="startDate" class="form-control" placeholder="Date">
 				</div>
 				<div class="col-sm-3">
-					<input id="endDate" ng-model="endDate" name="endDate"  class="form-control" value="{{ currentTime | date:'yyyy-dd-mm' }}" placeholder="Date">
+					<input id="endDate" ng-model="endDate" class="form-control" placeholder="Date">
 				</div>
 			</div>
 			<div class="form-group">
 				<label class="col-sm-2 control-label">Time</label>
 				<div class="col-sm-3">
-					<input id="startTime" ng-model="startTime" name="startTime" value="{{ currentTime | date:'HH:mm:ss' }}" class="form-control" placeholder="Time">
+					<input id="startTime" ng-model="startTime" value="" class="form-control" placeholder="Time">
 				</div>
 				<div class="col-sm-3">
-					<input id="endTime" ng-model="endTime" name="endTime" value="{{ currentTime | date:'HH:mm:ss' }}" class="form-control" placeholder="Time">
+					<input id="endTime" ng-model="endTime" value="" class="form-control" placeholder="Time">
 				</div>
 			</div>
 
@@ -75,7 +75,7 @@
 		</table>
 	</div>
 	<div class="col-md-7">
-		<div class="holycrap">
+		<div class="mychart">
 			<highchart id="chart1" config="chartConfig" ></highchart>
 		</div>
 	</div>
@@ -111,38 +111,10 @@ $(function() {
         $('#endDate').datepicker();
     }
 })();
-// For the timespinner
-/*$.widget("ui.timespinner", $.ui.spinner, {
-options: {
-// seconds
-step: 60 * 1000,
-// hours
-page: 60
-},
-_parse: function(value) {
-if (typeof value === "string") {
-// already a timestamp
-if (Number(value) == value) {
-return Number(value);
-}
-return +Globalize.parseDate(value);
-}
-return value;
-},
-_format: function(value) {
-return Globalize.format(new Date(value), "t");
-}
-});
-$(function() {
-	Globalize.culture('is-IS');
-$("#startTime").timespinner({showSeconds: true});
-$("#endTime").timespinner({showSeconds: true});
-//var current = $("#spinner").timespinner("value");
-//$("#spinner").timespinner("value", current);
-});*/
+
 // Let div chart follow scroll
 $(function() {
-    var $sidebar = $(".holycrap"),
+    var $sidebar = $(".mychart"),
         $window = $(window),
         offset = $sidebar.offset(),
         topPadding = 15;
@@ -157,5 +129,33 @@ $(function() {
             }, 'medium');
         }
     });
+});
+
+ $.widget("ui.timespinner", $.ui.spinner, {
+     options: {
+         // seconds
+         step: 60 * 1000,
+         // hours
+         page: 60
+     },
+     _parse: function(value) {
+         if (typeof value === "string") {
+             // already a timestamp
+             if (Number(value) == value) {
+                 return Number(value);
+             }
+             return +Globalize.parseDate(value);
+         }
+         return value;
+     },
+     _format: function(value) {
+         return Globalize.format(new Date(value), "t");
+     }
+ });
+
+$(function() {
+    Globalize.culture('is-IS');
+    $('#startTime').timespinner({showSeconds: true});
+    $('#endTime').timespinner({showSeconds: true});
 });
 </script>

@@ -1,8 +1,14 @@
 userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute",
     function($scope, $location, $routeParams, $http, $filter, apiRoute) {
         $scope.currentKey = $routeParams.key;
-        //$scope.startTime;
-        //$scope.endTime;
+
+        // Input current date into the inputs in function.html
+        $scope.currentDate = new Date();
+        $scope.startTime = $filter('date')($scope.currentDate, 'HH:mm');
+        $scope.endTime = $filter('date')($scope.currentDate, 'HH:mm');
+        $scope.startDate = $filter('date')($scope.currentDate, 'yyyy-MM-dd');
+        $scope.endDate = $filter('date')($scope.currentDate, 'yyyy-MM-dd');
+
         $scope.executionTimes = [];
 
         $scope.currentTime = new Date();
@@ -51,7 +57,7 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
                     text: 'Execution Times'
                 },
                 credits: {
-                    enabled: true
+                    enabled: false
                 },
                 loading: false,
                 size: {}
@@ -90,5 +96,7 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
         };
 
         $scope.getAll(0);
+        $scope.apply;
+
     }
 ]);

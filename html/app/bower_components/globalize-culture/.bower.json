@@ -20,6 +20,5 @@
   },
   "_source": "git://github.com/JanMiksovsky/globalize-culture.git",
   "_target": "~0.0.1",
-  "_originalSource": "globalize-culture",
-  "_direct": true
+  "_originalSource": "globalize-culture"
 }
