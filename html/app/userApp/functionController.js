@@ -25,20 +25,20 @@ userApp.controller("functionController", [
             var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
             var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
 
-            $scope.drasl = [];
+            $scope.listForChart = [];
             executionFactory.getCurrentKeyWithRange($scope.currentKey, page, start, end).then(
                 function(data, status, headers, config) {
                     $scope.executionTimes = data;
                     $scope.getTotal(start, end);
 
                     data.forEach(function(value) {
-                        $scope.drasl.push(value.execution_time);
+                        $scope.listForChart.push(value.execution_time);
                     });
                 });
 
             $scope.chartSeries = [{
                 "name": "Execution Time",
-                "data": $scope.drasl
+                "data": $scope.listForChart
             }];
             $scope.drawChart($scope.chartSeries)
 
