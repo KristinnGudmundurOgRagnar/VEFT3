@@ -66,11 +66,11 @@
 <input id="spinner" name="spinner" value="{{currentTime}}" />-->
 <div class="row">
 	<div class="col-md-4">
-		<div class="text-center bold">
+		<div class="text-center">
 			<strong>Limited to 25 lines per page</strong><br />
 			<strong>Found {{ getTotalForKey }} items</strong>
-
 		</div>
+		<pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()" items-per-page="itemPerPage"></pagination>
 		<table class="table table-striped">
 			<thead>
 				<th>TimeStamp</th>
@@ -81,6 +81,8 @@
 				<td>{{time.execution_time}}</td>
 			</tr>
 		</table>
+		<pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()" items-per-page="itemPerPage"></pagination>
+		<pre>Page: {{bigCurrentPage}} / {{numPages}}</pre>
 	</div>
 	<div class="col-md-7">
 		<div class="mychart">

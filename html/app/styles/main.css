@@ -3,3 +3,5 @@
     margin-top: 25%;
   }
 }
+
+.nav, .pagination, .carousel, .panel-title a { cursor: pointer; }

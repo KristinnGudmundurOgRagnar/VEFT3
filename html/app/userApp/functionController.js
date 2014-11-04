@@ -11,11 +11,13 @@ userApp.controller("functionController", [
         $scope.endDate = $filter('date')($scope.currentDate, 'yyyy-MM-dd');
 
         $scope.executionTimes = [];
+        $scope.getTotalForKey = 0;
+        $scope.totalItems;
 
         $scope.submitTimeRange = function(sDate, sTime, eDate, eTime, page) {
 
-            console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
-            console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
+            //console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
+            //console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
 
             var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
             var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
@@ -25,7 +27,7 @@ userApp.controller("functionController", [
                 function(data, status, headers, config) {
                     $scope.executionTimes = data;
                     $scope.getTotal(start, end);
-                    
+
                     data.forEach(function(value) {
                         $scope.drasl.push(value.execution_time);
                     });
@@ -65,6 +67,7 @@ userApp.controller("functionController", [
 
         $scope.getCurrentKey = function(mypage) {
             $scope.drasl = [];
+            $scope.getTotal(-1, -1);
             executionFactory.getCurrentKey($scope.currentKey, mypage).then(
                 function(data) {
                     $scope.executionTimes = data;
@@ -78,9 +81,7 @@ userApp.controller("functionController", [
                 "name": "Execution Time",
                 "data": $scope.drasl
             }];
-            $scope.drawChart($scope.chartSeries)
-            $scope.getTotal(-1, -1);
-
+            $scope.drawChart($scope.chartSeries);
         }
 
 
@@ -94,7 +95,23 @@ userApp.controller("functionController", [
 
         }
 
-        //$scope.getTotal();
         $scope.getCurrentKey(0);
+        $scope.maxSize = 4;
+        $scope.bigTotalItems = 0;
+        $scope.bigCurrentPage = 1;
+        $scope.itemPerPage = 25;
+
+        $scope.setPage = function(pageNo) {
+            $scope.bigCurrentPage = pageNo;
+        };
+
+        $scope.pageChanged = function() {
+            console.log('Page changed to: ' + $scope.bigCurrentPage);
+            $scope.getCurrentKey($scope.itemPerPage*($scope.bigCurrentPage-1))
+        };
+
+        $scope.$watch('getTotalForKey', function(newvalue, oldvalue) {
+            $scope.bigTotalItems = newvalue;
+        })
     }
 ]);

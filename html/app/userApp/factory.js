@@ -5,11 +5,11 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
                 var deferred = $q.defer();
                 var extraRoute = '';
 
-                if(lte > 0 && gte > 0){
+                if(lte >= 0 && gte >= 0){
                 	extraRoute = '/' + gte + '/' + lte;
                 }
-                console.log(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute);
-                
+                //console.log(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute);
+
                 $http.get(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute).
                 success(function(data) {
                     deferred.resolve(data);
@@ -40,10 +40,10 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
 
                 $http.get(apiRoute.apiEndpoint + '/api/key/' + id + '/execution_time/page/' + page).
                 success(function(data, status, headers) {
-                    console.log("Info: got times");
+                    //console.log("Info: got times");
                     if (status == 200) {
-                        console.log("Info: The times exist");
-                        console.log("Info: times are: " + JSON.stringify(data));
+                        //console.log("Info: The times exist");
+                        //onsole.log("Info: times are: " + JSON.stringify(data));
                     }
                     deferred.resolve(data);
                 }).
