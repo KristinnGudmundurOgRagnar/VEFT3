@@ -16,7 +16,7 @@
 		</div>
 	</div>
 	<div class="col-md-8">
-		<form class="form-horizontal" role="form" name="timeRangeForm" ng-submit="submitTimeRange()">
+		<form class="form-horizontal" role="form" name="timeRangeForm" ng-submit="submitTimeRange(startDate, startTime, endDate, endTime)">
 			<div class="form-group">
 				<label class="col-sm-offset-2 col-sm-5">Search for execution times in range</label>
 			</div>
@@ -41,10 +41,10 @@
 			<div class="form-group">
 				<label class="col-sm-2 control-label">Time</label>
 				<div class="col-sm-3">
-					<input id="startTime" ng-model="startTime" value="" class="form-control" placeholder="Time">
+					<input id="startTime" ng-model="startTime" value="" data-date-time class="form-control" placeholder="Time">
 				</div>
 				<div class="col-sm-3">
-					<input id="endTime" ng-model="endTime" value="" class="form-control" placeholder="Time">
+					<input id="endTime"  ng-model="endTime" value="" data-date-time class="form-control" placeholder="Time">
 				</div>
 			</div>
 
@@ -155,7 +155,25 @@ $(function() {
 
 $(function() {
     Globalize.culture('is-IS');
-    $('#startTime').timespinner({showSeconds: true});
-    $('#endTime').timespinner({showSeconds: true});
+    $('#startTime').timespinner();
+    $('#endTime').timespinner();
 });
+
+
+function formatTimeOfDay(millisSinceEpoch) {
+    var secondsSinceEpoch = (millisSinceEpoch / 1000) | 0;
+    var secondsInDay = ((secondsSinceEpoch % 86400) + 86400) % 86400;
+    var seconds = secondsInDay % 60;
+    var minutes = ((secondsInDay / 60) | 0) % 60;
+    var hours = (secondsInDay / 3600) | 0;
+    return (hours < 10 ? "0" : "") + hours + (minutes < 10 ? ":0" : ":") + minutes
+}
+
+
+$(document).ready(function() {
+    $("#startTime").val(formatTimeOfDay($.now()));
+    $("#endTime").val(formatTimeOfDay($.now()));
+});
+
+
 </script>

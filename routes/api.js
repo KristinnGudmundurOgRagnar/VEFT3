@@ -13,6 +13,8 @@ db.connectToMongo();
 
 mongoose.set('debug', true);
 
+var maxLimit = 25;
+
 
 /*
  * List all keys (without any values) that have been sent to the server.
@@ -47,7 +49,7 @@ router.get('/key/:key_id/execution_time/page/:number', function(req, res) {
         }
     }, {}, {
         skip: parseInt(req.params.number),
-        limit: 25
+        limit: maxLimit
     }, function(err, entries) {
         if (err) {
             console.error(err);
@@ -68,23 +70,28 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', funct
     var endTime = parseInt(req.params.endTime);
 
     Entry.find({
-        $query: {
-            key: key_id,
-            timestamp: {
-                $gte: startTime,
-                $lte: endTime
-            }
+            $query: {
+                key: key_id,
+                timestamp: {
+                    $gte: startTime,
+                    $lte: endTime
+                }
 
+            },
+            $orderby: {
+                timestamp: -1
+            },
+        }, 'key timestamp execution_time', {
+            skip: parseInt(req.params.number),
+            limit: maxLimit
         },
-        $orderby: {
-            timestamp: -1
-        },
-    }, 'key timestamp execution_time', function(err, entries) {
-        if (err)
-            res.status(500).send(err)
 
-        res.send(entries);
-    });
+        function(err, entries) {
+            if (err)
+                res.status(500).send(err)
+
+            res.send(entries);
+        });
 });
 
 module.exports = router;
