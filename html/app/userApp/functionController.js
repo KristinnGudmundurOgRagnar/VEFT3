@@ -1,5 +1,6 @@
-userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute", "HolyService",
-    function($scope, $location, $routeParams, $http, $filter, apiRoute, HolyService) {
+userApp.controller("functionController", [
+    "$routeParams", "$rootScope", "$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute", "executionFactory",
+    function($routeParams, $rootScope, $scope, $location, $routeParams, $http, $filter, apiRoute, executionFactory) {
         $scope.currentKey = $routeParams.key;
 
         // Input current date into the inputs in function.html
@@ -10,10 +11,8 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
         $scope.endDate = $filter('date')($scope.currentDate, 'yyyy-MM-dd');
 
         $scope.executionTimes = [];
-        console.log("Dagurinn í dager: " + $scope.currentDate);
-        //$scope.currentTime = new Date();
 
-        $scope.submitTimeRange = function(sDate, sTime, eDate, eTime) {
+        $scope.submitTimeRange = function(sDate, sTime, eDate, eTime, page) {
 
             console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
             console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
@@ -21,21 +20,23 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
             var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
 
-            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/' + start + '/' + end + '/page/0').
-            success(function(data, status, headers, config) {
-                console.log("Info: got times");
-                if (status == 200) {
-                    console.log("Info: The times exist");
-                    console.log("Info: times are: " + JSON.stringify(data));
+            $scope.drasl = [];
+            executionFactory.getCurrentKeyWithRange($scope.currentKey, 0, start, end).then(
+                function(data, status, headers, config) {
                     $scope.executionTimes = data;
-                    //setExecutionTimeFormat();
-                } else {
-                    console.log("Info: Times empty");
-                }
-            }).
-            error(function(data, status, headers, config) {
-                console.log("Error: unable to connect");
-            });
+                    $scope.getTotal(start, end);
+                    
+                    data.forEach(function(value) {
+                        $scope.drasl.push(value.execution_time);
+                    });
+                });
+
+            $scope.chartSeries = [{
+                "name": "Execution Time",
+                "data": $scope.drasl
+            }];
+            $scope.drawChart($scope.chartSeries)
+
         };
 
         $scope.drawChart = function(theData) {
@@ -62,46 +63,38 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             }
         }
 
-        $scope.getAll = function(page) {
-            console.log("Get all");
-            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time/page/' + page).
-            success(function(data, status, headers, config) {
-                console.log("Info: got times");
-                if (status == 200) {
-                    console.log("Info: The times exist");
-                    console.log("Info: times are: " + JSON.stringify(data));
+        $scope.getCurrentKey = function(mypage) {
+            $scope.drasl = [];
+            executionFactory.getCurrentKey($scope.currentKey, mypage).then(
+                function(data) {
                     $scope.executionTimes = data;
 
-                    $scope.drasl = [];
-                    angular.forEach(data, function(key, value) {
-                        $scope.drasl.push(data[value].execution_time);
+                    data.forEach(function(value) {
+                        $scope.drasl.push(value.execution_time);
                     });
+                });
 
-                    $scope.chartSeries = [{
-                        "name": "Execution Time",
-                        "data": $scope.drasl
-                    }];
+            $scope.chartSeries = [{
+                "name": "Execution Time",
+                "data": $scope.drasl
+            }];
+            $scope.drawChart($scope.chartSeries)
+            $scope.getTotal(-1, -1);
 
-                    $scope.drawChart($scope.chartSeries);
+        }
 
-                } else {
-                    console.log("Info: Times empty");
-                }
-            }).
-            error(function(data, status, headers, config) {
-                console.log("Error: unable to connect");
+
+        $scope.getTotal = function(gte, lte) {
+            var promise = executionFactory.getTotal($scope.currentKey, gte, lte);
+            promise.then(function(totalNumber) {
+                $scope.getTotalForKey = totalNumber;
+            }, function(errorPayload) {
+                $scope.getTotalForKey = 0;
             });
-        };
 
+        }
 
-        var promise = HolyService.getTotal($scope.currentKey);
-        promise.then(function(payload) {
-            $scope.getTotalForKey = payload.data;
-        }, function(errorPayload) {
-            $scope.getTotalForKey = 0;
-        });
-
-
-        $scope.getAll(0);
+        //$scope.getTotal();
+        $scope.getCurrentKey(0);
     }
 ]);

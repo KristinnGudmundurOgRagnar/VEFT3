@@ -96,17 +96,56 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', funct
 });
 
 
-router.get('/total/:key_id?', function(req, res) {
+router.get('/total/:key_id?/:startTime?/:endTime?', function(req, res) {
     var key_id = req.params.key_id;
-    var getValue = (key_id ? {'key': key_id} : {});
-    console.log(getValue);
-    Entry.count(getValue, function(err, entries) {
+    var startTime = parseInt(req.params.startTime);
+    var endTime = parseInt(req.params.endTime);
+    var query;
+
+    if (key_id) {
+        if (startTime) {
+            query = Entry.find({
+                'key': key_id,
+                timestamp: {
+                    $gte: startTime,
+                    $lte: endTime
+                }
+            });
+        } else
+            query = Entry.find({
+                'key': key_id
+            });
+    } else {
+        query = Entry.find({});
+    }
+
+
+    //var query = Entry.find(queryString);
+
+    query.count(function(err, count) {
+        if (err)
+            res.send(err);
+        res.json(count);
+    })
+
+    /*var countThis = (startTime ? Entry.find({
+            $query: {
+                key: key_id,
+                timestamp: {
+                    $gte: startTime,
+                    $lte: endTime
+                }
+            }
+        }) :
+        Entry.find(getValue));
+
+    countThis.count(countThis, function(err, entries) {
         console.log('Count is ' + entries);
         if (err) {
             res.status(404).send(err);
         }
         res.json(entries);
-    });
+    });*/
 });
 
 module.exports = router;
