@@ -1,4 +1,10 @@
 <div class="row">
+	<a href="#">
+		<span style="font-size: 1.2em"><span class="glyphicon glyphicon-chevron-left"></span>Go Back to main</span>
+	</a>
+</div>
+
+<div class="row">
 	<div class="col-md-12 text-center">
 		<h2>Execution times for key: {{currentKey}}</h2>
 	</div>
@@ -6,11 +12,11 @@
 
 <div class="row">
 	<div class="col-md-4 text-center">
-		<div style="margin-top: 25%;">
+		<div class="deadcenter">
 			<button class="btn btn-default" ng-click="getAll()">Get all execution times</button>
 			<div class="checkbox">
 				<label>
-					<input type="checkbox"> Update every 2 sec
+					<input type="checkbox"> Update every 10 sec
 				</label>
 			</div>
 		</div>
@@ -61,7 +67,9 @@
 <div class="row">
 	<div class="col-md-4">
 		<div class="text-center bold">
-			<strong>Limited to 25 lines per page</strong>
+			<strong>Limited to 25 lines per page</strong><br />
+			<strong>Found {{ getTotalForKey }} items</strong>
+
 		</div>
 		<table class="table table-striped">
 			<thead>

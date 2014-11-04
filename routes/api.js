@@ -25,11 +25,11 @@ router.get('/keys', function(req, res) {
     Entry.distinct('key', function(err, entries) {
         if (err) {
             console.error(err);
-            res.send(404);
+            res.status(404).send(err);
         }
 
         console.log(entries);
-        res.send(entries);
+        res.json(entries);
     })
 });
 
@@ -53,11 +53,11 @@ router.get('/key/:key_id/execution_time/page/:number', function(req, res) {
     }, function(err, entries) {
         if (err) {
             console.error(err);
-            res.send(404);
+            res.status(404).send(err);
         }
 
         console.log(entries);
-        res.send(entries);
+        res.json(entries);
     });
 });
 
@@ -87,11 +87,26 @@ router.get('/key/:key_id/execution_time/:startTime/:endTime/page/:number', funct
         },
 
         function(err, entries) {
-            if (err)
-                res.status(500).send(err)
+            if (err) {
+                res.status(404).send(err);
+            }
 
-            res.send(entries);
+            res.json(entries);
         });
+});
+
+
+router.get('/total/:key_id?', function(req, res) {
+    var key_id = req.params.key_id;
+    var getValue = (key_id ? {'key': key_id} : {});
+    console.log(getValue);
+    Entry.count(getValue, function(err, entries) {
+        console.log('Count is ' + entries);
+        if (err) {
+            res.status(404).send(err);
+        }
+        res.json(entries);
+    });
 });
 
 module.exports = router;

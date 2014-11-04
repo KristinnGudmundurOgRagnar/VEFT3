@@ -1,5 +1,5 @@
-userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute",
-    function($scope, $location, $routeParams, $http, $filter, apiRoute) {
+userApp.controller("functionController", ["$scope", "$location", "$routeParams", "$http", "$filter", "apiRoute", "HolyService",
+    function($scope, $location, $routeParams, $http, $filter, apiRoute, HolyService) {
         $scope.currentKey = $routeParams.key;
 
         // Input current date into the inputs in function.html
@@ -10,7 +10,7 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
         $scope.endDate = $filter('date')($scope.currentDate, 'yyyy-MM-dd');
 
         $scope.executionTimes = [];
-        console.log("Dagurinn í dager: "+$scope.currentDate);
+        console.log("Dagurinn í dager: " + $scope.currentDate);
         //$scope.currentTime = new Date();
 
         $scope.submitTimeRange = function(sDate, sTime, eDate, eTime) {
@@ -93,7 +93,15 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             });
         };
 
+
+        var promise = HolyService.getTotal($scope.currentKey);
+        promise.then(function(payload) {
+            $scope.getTotalForKey = payload.data;
+        }, function(errorPayload) {
+            $scope.getTotalForKey = 0;
+        });
+
+
         $scope.getAll(0);
     }
 ]);
-

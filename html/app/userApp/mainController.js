@@ -3,9 +3,6 @@
 userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute",
 
     function($scope, $location, $http, apiRoute) {
-        //alert("Ready to work");
-
-
         
         $scope.listOfKeys = [];
 
@@ -22,6 +19,18 @@ userApp.controller("mainController", ["$scope", "$location", "$http", "apiRoute"
         }).
         error(function(data, status, headers, config) {
             console.log("Error: unable to connect");
+        });
+
+        $http.get(apiRoute.apiEndpoint + '/api/total').
+        success(function(data, status, headers, config) {
+            if(status == 200) {
+                console.log('Count is ' + data);
+
+                $scope.totalRows = data;
+            }
+        }).
+        error(function(data, status, headers, config) {
+            $scope.totalRows = "Error getting data";
         });
 
 
