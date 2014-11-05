@@ -1,5 +1,6 @@
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
     function($rootScope, $http, $q, API_URL) {
         return {
@@ -41,9 +42,9 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
                 var deferred = $q.defer();
 
                 $http.get(API_URL + '/key/' + id + '/execution_time/page/' + page).
-                success(function(data, status, headers) {
+                success(function(data, status) {
                     //console.log("Info: got times");
-                    if (status == 200) {
+                    if (status === 200) {
                         //console.log("Info: The times exist");
                         //onsole.log("Info: times are: " + JSON.stringify(data));
                     }
@@ -55,6 +56,6 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
 
                 return deferred.promise;
             }
-        }
+        };
     }
 ]);

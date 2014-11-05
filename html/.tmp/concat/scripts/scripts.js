@@ -22,6 +22,7 @@ userApp.config(['$routeProvider',
 ]).constant('API_URL', 'http://127.0.0.1:3000/api');
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
     function($rootScope, $http, $q, API_URL) {
         return {
@@ -63,9 +64,9 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
                 var deferred = $q.defer();
 
                 $http.get(API_URL + '/key/' + id + '/execution_time/page/' + page).
-                success(function(data, status, headers) {
+                success(function(data, status) {
                     //console.log("Info: got times");
-                    if (status == 200) {
+                    if (status === 200) {
                         //console.log("Info: The times exist");
                         //onsole.log("Info: times are: " + JSON.stringify(data));
                     }
@@ -77,11 +78,12 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
 
                 return deferred.promise;
             }
-        }
+        };
     }
 ]);
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.directive('dateTime', function() {
     return {
         restrict: 'A',
@@ -96,16 +98,17 @@ userApp.directive('dateTime', function() {
                 scope.$apply(read);
             });
 
-            read();
-
             function read() {
                 ngModel.$setViewValue(element.val());
             }
+
+            read();
         }
-    }
+    };
 });
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.controller('functionController', [
     '$routeParams', '$rootScope', '$scope', '$location',
     '$http', '$filter', '$interval', 'executionFactory',
@@ -121,22 +124,23 @@ userApp.controller('functionController', [
 
         $scope.executionTimes = [];
         $scope.getTotalForKey = 0;
-        $scope.totalItems;
+        $scope.totalItems = 0;
         $scope.chartSeries = [];
-        var prufa = true;
-        var ssDate, ssTime, eeDate, eeTime;
+
+        $scope.updateNumber = 10000;
+        var isNotRange = true;
 
         $scope.submitTimeRange = function(sDate, sTime, eDate, eTime, page) {
 
             //console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
             //console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
-            prufa = false;
-            var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
-            var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
+            isNotRange = false;
+            var start = new Date(sDate + 'T' + sTime + ':59Z').getTime() / 1000;
+            var end = new Date(eDate + 'T' + eTime + ':59Z').getTime() / 1000;
 
             $scope.listForChart = [];
             executionFactory.getCurrentKeyWithRange($scope.currentKey, page, start, end).then(
-                function(data, status, headers, config) {
+                function(data) {
                     $scope.executionTimes = data;
                     $scope.getTotal(start, end);
 
@@ -146,17 +150,18 @@ userApp.controller('functionController', [
                 });
 
             $scope.chartSeries = [{
-                "name": "Execution Time",
-                "data": $scope.listForChart
+                'name': 'Execution Time',
+                'data': $scope.listForChart,
+                'color': '#6956D6'
             }];
-            $scope.drawChart($scope.chartSeries)
-
+            $scope.drawChart($scope.chartSeries);
         };
 
         $scope.drawChart = function(theData) {
             $scope.chartConfig = {
                 options: {
                     chart: {
+
                         type: 'spline'
                     },
                     plotOptions: {
@@ -164,6 +169,9 @@ userApp.controller('functionController', [
                             stacking: ''
                         }
                     }
+                },
+                chart: {
+                    renderTo: 'container'
                 },
                 series: theData,
                 title: {
@@ -174,8 +182,8 @@ userApp.controller('functionController', [
                 },
                 loading: false,
                 size: {}
-            }
-        }
+            };
+        };
 
         $scope.getCurrentKey = function(mypage) {
             $scope.listForChart = [];
@@ -190,28 +198,28 @@ userApp.controller('functionController', [
                 });
 
             $scope.chartSeries = [{
-                "name": "Execution Time",
-                "data": $scope.listForChart
+                'name': 'Execution Time',
+                'data': $scope.listForChart,
+                'color': '#6956D6'
             }];
-        }
+        };
 
         $scope.GetAllEx = function() {
             $scope.getCurrentKey(0);
             $scope.drawChart($scope.chartSeries);
             $scope.setPage(1);
-            prufa = true;
-        }
+            isNotRange = true;
+        };
 
 
         $scope.getTotal = function(gte, lte) {
             var promise = executionFactory.getTotal($scope.currentKey, gte, lte);
             promise.then(function(totalNumber) {
                 $scope.getTotalForKey = totalNumber;
-            }, function(errorPayload) {
+            }, function() {
                 $scope.getTotalForKey = 0;
             });
-
-        }
+        };
 
         $scope.getCurrentKey(0);
         $scope.drawChart($scope.chartSeries);
@@ -227,52 +235,53 @@ userApp.controller('functionController', [
 
         $scope.pageChanged = function() {
             //console.log('Page changed to: ' + $scope.bigCurrentPage);
-            if (prufa)
-                $scope.getCurrentKey($scope.itemPerPage * ($scope.bigCurrentPage - 1))
-            else {
+            if (isNotRange) {
+                $scope.getCurrentKey($scope.itemPerPage * ($scope.bigCurrentPage - 1));
+            } else {
                 $scope.submitTimeRange($scope.startDate, $scope.startTime, $scope.endDate, $scope.endTime, $scope.itemPerPage * ($scope.bigCurrentPage - 1));
             }
             $scope.drawChart($scope.chartSeries);
         };
 
-        $scope.$watch('getTotalForKey', function(newvalue, oldvalue) {
+        $scope.$watch('getTotalForKey', function(newvalue) {
             $scope.bigTotalItems = newvalue;
         });
 
         // Here comes the timer for updating the view
         var timer;
-        $scope.timerCtrl = function() {
-            $scope.$watch('timerCheck', function(n, o) {
-                var trues = $filter('filter')(n, {
-                    val: true
-                })
-                if (trues == true) {
-                    timer = $interval(function() {
-                        $scope.getCurrentKey(0);
-                        $scope.drawChart($scope.chartSeries);
-                        $scope.setPage(1);
-                    }, 10000);
-                } else {
-                    if (angular.isDefined(timer)) {
-                        $interval.cancel(timer);
-                        timer = undefined;
-                    }
+        $scope.$watch('timerCheck', function(n) {
+            var trues = $filter('filter')(n, {
+                val: true
+            });
+
+            if (trues === true) {
+
+                timer = $interval(function() {
+                    $scope.getCurrentKey(0);
+                    $scope.drawChart($scope.chartSeries);
+                    $scope.setPage(1);
+                }, $scope.updateNumber);
+            } else {
+                if (angular.isDefined(timer)) {
+                    $interval.cancel(timer);
+                    timer = undefined;
                 }
-            }, true);
-        };
+            }
+        }, true);
     }
 ]);
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
     function($scope, $location, $http, API_URL) {
 
         $scope.listOfKeys = [];
 
         $http.get(API_URL + '/keys').
-        success(function(data, status, headers, config) {
+        success(function(data, status) {
             console.log('Info: got keys');
-            if (status == 200) {
+            if (status === 200) {
                 //console.log("Info: The keys exist");
                 //console.log("Info: keys are: " + JSON.stringify(data));
                 $scope.listOfKeys = data;
@@ -280,19 +289,19 @@ userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
                 console.log('Info: Keys empty');
             }
         }).
-        error(function(data, status, headers, config) {
-            //console.log("Error: unable to connect");
+        error(function() {
+            $scope.listOfKeys = 'Error getting keys';
         });
 
         $http.get(API_URL + '/total').
-        success(function(data, status, headers, config) {
-            if (status == 200) {
+        success(function(data, status) {
+            if (status === 200) {
                 //console.log('Count is ' + data);
 
                 $scope.totalRows = data;
             }
         }).
-        error(function(data, status, headers, config) {
+        error(function() {
             $scope.totalRows = 'Error getting data';
         });
 

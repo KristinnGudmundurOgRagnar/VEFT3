@@ -1,5 +1,6 @@
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.directive('dateTime', function() {
     return {
         restrict: 'A',
@@ -14,11 +15,11 @@ userApp.directive('dateTime', function() {
                 scope.$apply(read);
             });
 
-            read();
-
             function read() {
                 ngModel.$setViewValue(element.val());
             }
+
+            read();
         }
-    }
+    };
 });

@@ -1,14 +1,15 @@
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
     function($scope, $location, $http, API_URL) {
 
         $scope.listOfKeys = [];
 
         $http.get(API_URL + '/keys').
-        success(function(data, status, headers, config) {
+        success(function(data, status) {
             console.log('Info: got keys');
-            if (status == 200) {
+            if (status === 200) {
                 //console.log("Info: The keys exist");
                 //console.log("Info: keys are: " + JSON.stringify(data));
                 $scope.listOfKeys = data;
@@ -16,19 +17,19 @@ userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
                 console.log('Info: Keys empty');
             }
         }).
-        error(function(data, status, headers, config) {
-            //console.log("Error: unable to connect");
+        error(function() {
+            $scope.listOfKeys = 'Error getting keys';
         });
 
         $http.get(API_URL + '/total').
-        success(function(data, status, headers, config) {
-            if (status == 200) {
+        success(function(data, status) {
+            if (status === 200) {
                 //console.log('Count is ' + data);
 
                 $scope.totalRows = data;
             }
         }).
-        error(function(data, status, headers, config) {
+        error(function() {
             $scope.totalRows = 'Error getting data';
         });
 

@@ -1,5 +1,6 @@
 'use strict';
 
+var userApp = angular.module('userApp');
 userApp.controller('functionController', [
     '$routeParams', '$rootScope', '$scope', '$location',
     '$http', '$filter', '$interval', 'executionFactory',
@@ -15,22 +16,23 @@ userApp.controller('functionController', [
 
         $scope.executionTimes = [];
         $scope.getTotalForKey = 0;
-        $scope.totalItems;
+        $scope.totalItems = 0;
         $scope.chartSeries = [];
-        var prufa = true;
-        var ssDate, ssTime, eeDate, eeTime;
+
+        $scope.updateNumber = 10000;
+        var isNotRange = true;
 
         $scope.submitTimeRange = function(sDate, sTime, eDate, eTime, page) {
 
             //console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
             //console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
-            prufa = false;
-            var start = new Date(sDate + "T" + sTime + ":59Z").getTime() / 1000;
-            var end = new Date(eDate + "T" + eTime + ":59Z").getTime() / 1000;
+            isNotRange = false;
+            var start = new Date(sDate + 'T' + sTime + ':59Z').getTime() / 1000;
+            var end = new Date(eDate + 'T' + eTime + ':59Z').getTime() / 1000;
 
             $scope.listForChart = [];
             executionFactory.getCurrentKeyWithRange($scope.currentKey, page, start, end).then(
-                function(data, status, headers, config) {
+                function(data) {
                     $scope.executionTimes = data;
                     $scope.getTotal(start, end);
 
@@ -40,17 +42,18 @@ userApp.controller('functionController', [
                 });
 
             $scope.chartSeries = [{
-                "name": "Execution Time",
-                "data": $scope.listForChart
+                'name': 'Execution Time',
+                'data': $scope.listForChart,
+                'color': '#6956D6'
             }];
-            $scope.drawChart($scope.chartSeries)
-
+            $scope.drawChart($scope.chartSeries);
         };
 
         $scope.drawChart = function(theData) {
             $scope.chartConfig = {
                 options: {
                     chart: {
+
                         type: 'spline'
                     },
                     plotOptions: {
@@ -58,6 +61,9 @@ userApp.controller('functionController', [
                             stacking: ''
                         }
                     }
+                },
+                chart: {
+                    renderTo: 'container'
                 },
                 series: theData,
                 title: {
@@ -68,8 +74,8 @@ userApp.controller('functionController', [
                 },
                 loading: false,
                 size: {}
-            }
-        }
+            };
+        };
 
         $scope.getCurrentKey = function(mypage) {
             $scope.listForChart = [];
@@ -84,28 +90,28 @@ userApp.controller('functionController', [
                 });
 
             $scope.chartSeries = [{
-                "name": "Execution Time",
-                "data": $scope.listForChart
+                'name': 'Execution Time',
+                'data': $scope.listForChart,
+                'color': '#6956D6'
             }];
-        }
+        };
 
         $scope.GetAllEx = function() {
             $scope.getCurrentKey(0);
             $scope.drawChart($scope.chartSeries);
             $scope.setPage(1);
-            prufa = true;
-        }
+            isNotRange = true;
+        };
 
 
         $scope.getTotal = function(gte, lte) {
             var promise = executionFactory.getTotal($scope.currentKey, gte, lte);
             promise.then(function(totalNumber) {
                 $scope.getTotalForKey = totalNumber;
-            }, function(errorPayload) {
+            }, function() {
                 $scope.getTotalForKey = 0;
             });
-
-        }
+        };
 
         $scope.getCurrentKey(0);
         $scope.drawChart($scope.chartSeries);
@@ -121,38 +127,38 @@ userApp.controller('functionController', [
 
         $scope.pageChanged = function() {
             //console.log('Page changed to: ' + $scope.bigCurrentPage);
-            if (prufa)
-                $scope.getCurrentKey($scope.itemPerPage * ($scope.bigCurrentPage - 1))
-            else {
+            if (isNotRange) {
+                $scope.getCurrentKey($scope.itemPerPage * ($scope.bigCurrentPage - 1));
+            } else {
                 $scope.submitTimeRange($scope.startDate, $scope.startTime, $scope.endDate, $scope.endTime, $scope.itemPerPage * ($scope.bigCurrentPage - 1));
             }
             $scope.drawChart($scope.chartSeries);
         };
 
-        $scope.$watch('getTotalForKey', function(newvalue, oldvalue) {
+        $scope.$watch('getTotalForKey', function(newvalue) {
             $scope.bigTotalItems = newvalue;
         });
 
         // Here comes the timer for updating the view
         var timer;
-        $scope.timerCtrl = function() {
-            $scope.$watch('timerCheck', function(n, o) {
-                var trues = $filter('filter')(n, {
-                    val: true
-                })
-                if (trues == true) {
-                    timer = $interval(function() {
-                        $scope.getCurrentKey(0);
-                        $scope.drawChart($scope.chartSeries);
-                        $scope.setPage(1);
-                    }, 10000);
-                } else {
-                    if (angular.isDefined(timer)) {
-                        $interval.cancel(timer);
-                        timer = undefined;
-                    }
+        $scope.$watch('timerCheck', function(n) {
+            var trues = $filter('filter')(n, {
+                val: true
+            });
+
+            if (trues === true) {
+
+                timer = $interval(function() {
+                    $scope.getCurrentKey(0);
+                    $scope.drawChart($scope.chartSeries);
+                    $scope.setPage(1);
+                }, $scope.updateNumber);
+            } else {
+                if (angular.isDefined(timer)) {
+                    $interval.cancel(timer);
+                    timer = undefined;
                 }
-            }, true);
-        };
+            }
+        }, true);
     }
 ]);
