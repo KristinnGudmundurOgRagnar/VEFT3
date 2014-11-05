@@ -25,7 +25,7 @@ Run Grunt
 
 Try the app
 
-`grunt serv`
+`grunt serve`
 
 Build it for production
 
