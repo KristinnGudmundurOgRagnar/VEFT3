@@ -69,6 +69,9 @@ userApp.controller('functionController', [
                 title: {
                     text: 'Execution Times'
                 },
+                xAxis: {
+                reversed: true,
+                },
                 credits: {
                     enabled: false
                 },
