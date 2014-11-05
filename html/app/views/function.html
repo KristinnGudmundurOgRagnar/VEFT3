@@ -1,22 +1,76 @@
-<h2>Execution times for key: {{currentKey}}</h2>
+<div class="row">
+	<a href="#">
+		<span style="font-size: 1.2em"><span class="glyphicon glyphicon-chevron-left"></span>Go Back to main</span>
+	</a>
+</div>
 
-<form role="form" name="timeRangeForm" ng-submit="submitTimeRange()" >
-	<label>Search for execution times in range:</label>
-	<div class="form-group">
-		<!--<input type="number" ng-model="startTime" required placeholder="Start time">
-		<input type="number" ng-model="endTime" required placeholder="End time">-->
-		<input type="date" name="date" id="date" value="" />
-		<input id="spinner" name="spinner" value="{{currentTime}}" />
-		<button type="submit" class="btn btn-default">Submit</button>
+<div class="row">
+	<div class="col-md-12 text-center">
+		<h2>Execution times for key: {{currentKey}}</h2>
 	</div>
-</form>
+</div>
 
-<div class="form-group">
-	<button ng-click="getAll()">Get all execution times</button>
-	<!--<input type="date" name="date" id="date" value="" />
-	<input id="spinner" name="spinner" value="{{currentTime}}" />-->
+<div class="row">
+	<div class="col-md-4 text-center">
+		<div class="deadcenter">
+			<button class="btn btn-default" ng-click="GetAllEx()">Get all execution times</button>
+			<div class="checkbox">
+				<label>
+					<input ng-model="timerCheck" type="checkbox"> Update every 10 sec
+				</label>
+			</div>
+		</div>
+	</div>
+	<div class="col-md-8">
+		<form class="form-horizontal" role="form" name="timeRangeForm" ng-submit="submitTimeRange(startDate, startTime, endDate, endTime)">
+			<div class="form-group">
+				<label class="col-sm-offset-2 col-sm-5">Search for execution times in range</label>
+			</div>
+			<div class="form-group">
+				
+				<div class="col-sm-offset-2 col-sm-2">
+					<label>Start</label>
+				</div>
+				<div class="col-sm-offset-1 col-sm-2">
+					<label>End</label>
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Date</label>
+				<div class="col-sm-3">
+					<input id="startDate" ng-model="startDate" name="startDate" class="form-control" placeholder="Date">
+				</div>
+				<div class="col-sm-3">
+					<input id="endDate" ng-model="endDate" class="form-control" placeholder="Date">
+				</div>
+			</div>
+			<div class="form-group">
+				<label class="col-sm-2 control-label">Time</label>
+				<div class="col-sm-3">
+					<input id="startTime" ng-model="startTime" value="" data-date-time class="form-control" placeholder="Time">
+				</div>
+				<div class="col-sm-3">
+					<input id="endTime"  ng-model="endTime" value="" data-date-time class="form-control" placeholder="Time">
+				</div>
+			</div>
+
+			<div class="form-group">
+				<div class="col-sm-offset-2 col-sm-2">
+					<button type="submit" class="btn btn-default">Submit</button>
+				</div>
+			</div>
+		</form>
+	</div>
+</div>
+<!--<input type="date" name="date" id="date" value="" />
+<input id="spinner" name="spinner" value="{{currentTime}}" />-->
 <div class="row">
 	<div class="col-md-4">
+		<div class="text-center">
+			<strong>Limited to 25 lines per page</strong><br />
+			<strong>Found {{ getTotalForKey }} items</strong>
+		</div>
+		<pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()" items-per-page="itemPerPage"></pagination>
 		<table class="table table-striped">
 			<thead>
 				<th>TimeStamp</th>
@@ -27,20 +81,109 @@
 				<td>{{time.execution_time}}</td>
 			</tr>
 		</table>
+		<pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" rotate="false" num-pages="numPages" ng-change="pageChanged()" items-per-page="itemPerPage"></pagination>
+		<pre>Page: {{bigCurrentPage}} / {{numPages}}</pre>
 	</div>
-	<div class="col-md-7 holycrap">
-		<highchart id="chart1" config="chartConfig" ></highchart>
+	<div class="col-md-7">
+		<div class="mychart">
+			<highchart id="chart1" config="chartConfig" ></highchart>
+		</div>
 	</div>
 </div>
 <script>
-$('#date').datepicker({
-dateFormat: 'dd-mm-yy'
+$(function() {
+    $("#startDate").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 2,
+        dateFormat: "yy-mm-dd",
+        onClose: function(selectedDate) {
+            $("#endDate").datepicker("option", "minDate", selectedDate);
+        }
+    });
+    $("#endDate").datepicker({
+        defaultDate: "+1w",
+        changeMonth: true,
+        changeYear: true,
+        numberOfMonths: 2,
+        dateFormat: "yy-mm-dd",
+        onClose: function(selectedDate) {
+            $("#startDate").datepicker("option", "maxDate", selectedDate);
+        }
+    });
 });
 (function() {
-var elem = document.createElement('input');
-elem.setAttribute('type', 'date');
-if (elem.type === 'text') {
-$('#date').datepicker();
-}
+    var elem = document.createElement('input');
+    elem.setAttribute('type', 'date');
+    if (elem.type === 'text') {
+        $('#startDate').datepicker();
+        $('#endDate').datepicker();
+    }
 })();
+
+// Let div chart follow scroll
+$(function() {
+    var $sidebar = $(".mychart"),
+        $window = $(window),
+        offset = $sidebar.offset(),
+        topPadding = 15;
+    $window.scroll(function() {
+        if ($window.scrollTop() > offset.top) {
+            $sidebar.stop().animate({
+                marginTop: $window.scrollTop() - offset.top + topPadding
+            }, 'medium');
+        } else {
+            $sidebar.stop().animate({
+                marginTop: 0
+            }, 'medium');
+        }
+    });
+});
+
+ $.widget("ui.timespinner", $.ui.spinner, {
+     options: {
+         // seconds
+         step: 60 * 1000,
+         // hours
+         page: 60
+     },
+     _parse: function(value) {
+         if (typeof value === "string") {
+             // already a timestamp
+             if (Number(value) == value) {
+                 return Number(value);
+             }
+             return +Globalize.parseDate(value);
+         }
+         return value;
+     },
+     _format: function(value) {
+         return Globalize.format(new Date(value), "t");
+     }
+ });
+
+$(function() {
+    Globalize.culture('is-IS');
+    $('#startTime').timespinner();
+    $('#endTime').timespinner();
+});
+
+
+function formatTimeOfDay(millisSinceEpoch) {
+    var secondsSinceEpoch = (millisSinceEpoch / 1000) | 0;
+    var secondsInDay = ((secondsSinceEpoch % 86400) + 86400) % 86400;
+    var seconds = secondsInDay % 60;
+    var minutes = ((secondsInDay / 60) | 0) % 60;
+    var hours = (secondsInDay / 3600) | 0;
+    return (hours < 10 ? "0" : "") + hours + (minutes < 10 ? ":0" : ":") + minutes
+}
+
+
+$(document).ready(function() {
+    $("#startTime").val(formatTimeOfDay($.now()));
+    $("#endTime").val(formatTimeOfDay($.now()));
+});
+
+
 </script>

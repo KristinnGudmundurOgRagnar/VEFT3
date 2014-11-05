@@ -1,0 +1,24 @@
+{
+  "name": "globalize-culture",
+  "description": "Component for selecting and managing a Globalize culture",
+  "version": "0.0.1",
+  "private": true,
+  "dependencies": {
+    "globalize": "*",
+    "polymer": "Polymer/polymer#master"
+  },
+  "ignore": [
+    "**/.*",
+    "components"
+  ],
+  "homepage": "https://github.com/JanMiksovsky/globalize-culture",
+  "_release": "0.0.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.0.1",
+    "commit": "350f864dd13255fdbee9cc81724f0a585cebc960"
+  },
+  "_source": "git://github.com/JanMiksovsky/globalize-culture.git",
+  "_target": "~0.0.1",
+  "_originalSource": "globalize-culture"
+}

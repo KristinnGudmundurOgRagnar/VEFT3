@@ -1,12 +1,28 @@
 <h3>Keys that have sent execution times via kodemon</h3>
-
-<table class="table table-striped">
-	<thead>
-		<th>Number</th>
-		<th>Key</th>
-	</thead>
-<tr ng-repeat="key in listOfKeys">
-	<td>{{$index + 1}}</td>
-	<td><a ng-click="buttonClicked(key)">{{key}}</a></td>
-</tr>
-</table>
+<div class="row">
+	<div class="col-md-8">
+		<table class="table table-striped">
+			<thead>
+				<th>Number</th>
+				<th>Key</th>
+			</thead>
+			<tbody>
+			<tr ng-repeat="key in listOfKeys">
+				<td>{{$index + 1}}</td>
+				<td><a ng-click="buttonClicked(key)">{{key}}</a></td>
+			</tr>
+		</tbody>
+		</table>
+	</div>
+	<div class="col-md-4">
+		<table class="table table-striped">
+			<thead>
+				<th>Fun facts from the API</th>
+				<th></th>
+			</thead>
+			<tbody>
+				<tr><td>Number of rows:</td><td>{{totalRows}}</td></tr>
+			</tbody>
+		</table>
+	</div>
+</div>
