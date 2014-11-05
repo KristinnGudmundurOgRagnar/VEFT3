@@ -13,17 +13,19 @@ Install
 Run
 ---
 
-There are two server, one for Kodemon insertions and one for API
+There are two server, one for Kodemon database and one for API
 
 To run Kodemon database server run
+
 `node index.js`
 
 
 To run API server run
+
 `node apiserver.js`
 
 
 Web Application
 ----------------
 
-Under 'html' folder is the web application. Read README.md for more information
+Under `html` folder is the web application. Read README.md for more information

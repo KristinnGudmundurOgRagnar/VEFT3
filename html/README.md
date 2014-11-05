@@ -1,21 +1,42 @@
 Kodemon Web Appliation
 ======================
 
-Run grunt
----------
 
-Install using: 
+Install
+-------
 `npm install -g grunt-cli bower`
+
+
+And to install npm packages
+
 `npm install`
 
-If npm doesn't install bower components you can run this command:
+
+Note:
+
+If npm command doesn't install bower components 
+
+automatically you can run this command:
+
 `bower install`
 
-else try the app
+Run Grunt
+---------
+
+Try the app
+
 `grunt serv`
 
-or build it for production
+Build it for production
+
 `grunt build`
+
+
+Folder structure
+----------------
+``app`` folder contains the development app
+
+``dist`` folder contains the production app
 
 
 
