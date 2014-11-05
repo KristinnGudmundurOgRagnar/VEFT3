@@ -2,11 +2,9 @@
 
 var userApp = angular.module('userApp', [
     'ngRoute',
-    'ngCookies',
-    'ngTouch',
-    'config',
+    'ngResource',
     'highcharts-ng',
-    'ui.bootstrap'
+    'ui.bootstrap',
 ]);
 
 userApp.config(['$routeProvider',
@@ -21,4 +19,4 @@ userApp.config(['$routeProvider',
             redirectTo: '/'
         });
     }
-]);
+]).constant('API_URL', 'http://127.0.0.1:3000/api');

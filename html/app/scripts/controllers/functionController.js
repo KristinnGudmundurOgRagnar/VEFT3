@@ -2,8 +2,8 @@
 
 userApp.controller('functionController', [
     '$routeParams', '$rootScope', '$scope', '$location',
-    '$http', '$filter', 'apiRoute', 'executionFactory',
-    function($routeParams, $rootScope, $scope, $location, $http, $filter, apiRoute, executionFactory) {
+    '$http', '$filter', '$interval', 'executionFactory',
+    function($routeParams, $rootScope, $scope, $location, $http, $filter, $interval, executionFactory) {
         $scope.currentKey = $routeParams.key;
 
         // Input current date into the inputs in function.html
@@ -135,9 +135,9 @@ userApp.controller('functionController', [
 
         // Here comes the timer for updating the view
         var timer;
-        $scope.timerCtrl = function($scope, $filter, $interval) {
-            $scope.$watch("timerCheck", function(n, o) {
-                var trues = $filter("filter")(n, {
+        $scope.timerCtrl = function() {
+            $scope.$watch('timerCheck', function(n, o) {
+                var trues = $filter('filter')(n, {
                     val: true
                 })
                 if (trues == true) {
@@ -153,7 +153,6 @@ userApp.controller('functionController', [
                     }
                 }
             }, true);
-        }
-
+        };
     }
 ]);

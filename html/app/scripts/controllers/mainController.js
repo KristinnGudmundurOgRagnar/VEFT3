@@ -1,26 +1,26 @@
 'use strict';
 
-userApp.controller('mainController', ['$scope', '$location', '$http', 'apiRoute',
-    function($scope, $location, $http, apiRoute) {
+userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
+    function($scope, $location, $http, API_URL) {
 
         $scope.listOfKeys = [];
 
-        $http.get(apiRoute.apiEndpoint + '/api/keys').
+        $http.get(API_URL + '/keys').
         success(function(data, status, headers, config) {
-            console.log("Info: got keys");
+            console.log('Info: got keys');
             if (status == 200) {
                 //console.log("Info: The keys exist");
                 //console.log("Info: keys are: " + JSON.stringify(data));
                 $scope.listOfKeys = data;
             } else {
-                console.log("Info: Keys empty");
+                console.log('Info: Keys empty');
             }
         }).
         error(function(data, status, headers, config) {
             //console.log("Error: unable to connect");
         });
 
-        $http.get(apiRoute.apiEndpoint + '/api/total').
+        $http.get(API_URL + '/total').
         success(function(data, status, headers, config) {
             if (status == 200) {
                 //console.log('Count is ' + data);
@@ -29,12 +29,12 @@ userApp.controller('mainController', ['$scope', '$location', '$http', 'apiRoute'
             }
         }).
         error(function(data, status, headers, config) {
-            $scope.totalRows = "Error getting data";
+            $scope.totalRows = 'Error getting data';
         });
 
 
         $scope.buttonClicked = function(key) {
-            $location.path("/" + key + "/");
+            $location.path('/' + key + '/');
         };
     }
 ]);

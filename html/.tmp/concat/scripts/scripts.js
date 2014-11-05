@@ -2,11 +2,9 @@
 
 var userApp = angular.module('userApp', [
     'ngRoute',
-    'ngCookies',
-    'ngTouch',
-    'config',
+    'ngResource',
     'highcharts-ng',
-    'ui.bootstrap'
+    'ui.bootstrap',
 ]);
 
 userApp.config(['$routeProvider',
@@ -21,18 +19,11 @@ userApp.config(['$routeProvider',
             redirectTo: '/'
         });
     }
-]);
-"use strict";
-
-angular.module("config", [])
-
-.constant("apiRoute", {
-    "apiEndpoint": "http://127.0.0.1:3000"
-});
+]).constant('API_URL', 'http://127.0.0.1:3000/api');
 'use strict';
 
-userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
-    function($rootScope, $http, $q, apiRoute) {
+userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
+    function($rootScope, $http, $q, API_URL) {
         return {
             getTotal: function(id, gte, lte) {
                 var deferred = $q.defer();
@@ -43,7 +34,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
                 }
                 //console.log(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute);
 
-                $http.get(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute).
+                $http.get(API_URL+ '/total/' + id + extraRoute).
                 success(function(data) {
                     deferred.resolve(data);
                 }).
@@ -57,7 +48,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
             getCurrentKeyWithRange: function(id, page, start, end) {
                 var deferred = $q.defer();
 
-                $http.get(apiRoute.apiEndpoint + '/api/key/' + id + '/execution_time/' + start + '/' + end + '/page/' + page).
+                $http.get(API_URL + '/key/' + id + '/execution_time/' + start + '/' + end + '/page/' + page).
                 success(function(data, status, headers, config) {
                     deferred.resolve(data, status, headers, config);
                 }).
@@ -71,7 +62,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
             getCurrentKey: function(id, page) {
                 var deferred = $q.defer();
 
-                $http.get(apiRoute.apiEndpoint + '/api/key/' + id + '/execution_time/page/' + page).
+                $http.get(API_URL + '/key/' + id + '/execution_time/page/' + page).
                 success(function(data, status, headers) {
                     //console.log("Info: got times");
                     if (status == 200) {
@@ -117,8 +108,8 @@ userApp.directive('dateTime', function() {
 
 userApp.controller('functionController', [
     '$routeParams', '$rootScope', '$scope', '$location',
-    '$http', '$filter', 'apiRoute', 'executionFactory',
-    function($routeParams, $rootScope, $scope, $location, $http, $filter, apiRoute, executionFactory) {
+    '$http', '$filter', '$interval', 'executionFactory',
+    function($routeParams, $rootScope, $scope, $location, $http, $filter, $interval, executionFactory) {
         $scope.currentKey = $routeParams.key;
 
         // Input current date into the inputs in function.html
@@ -250,9 +241,9 @@ userApp.controller('functionController', [
 
         // Here comes the timer for updating the view
         var timer;
-        $scope.timerCtrl = function($scope, $filter, $interval) {
-            $scope.$watch("timerCheck", function(n, o) {
-                var trues = $filter("filter")(n, {
+        $scope.timerCtrl = function() {
+            $scope.$watch('timerCheck', function(n, o) {
+                var trues = $filter('filter')(n, {
                     val: true
                 })
                 if (trues == true) {
@@ -268,33 +259,32 @@ userApp.controller('functionController', [
                     }
                 }
             }, true);
-        }
-
+        };
     }
 ]);
 'use strict';
 
-userApp.controller('mainController', ['$scope', '$location', '$http', 'apiRoute',
-    function($scope, $location, $http, apiRoute) {
+userApp.controller('mainController', ['$scope', '$location', '$http', 'API_URL',
+    function($scope, $location, $http, API_URL) {
 
         $scope.listOfKeys = [];
 
-        $http.get(apiRoute.apiEndpoint + '/api/keys').
+        $http.get(API_URL + '/keys').
         success(function(data, status, headers, config) {
-            console.log("Info: got keys");
+            console.log('Info: got keys');
             if (status == 200) {
                 //console.log("Info: The keys exist");
                 //console.log("Info: keys are: " + JSON.stringify(data));
                 $scope.listOfKeys = data;
             } else {
-                console.log("Info: Keys empty");
+                console.log('Info: Keys empty');
             }
         }).
         error(function(data, status, headers, config) {
             //console.log("Error: unable to connect");
         });
 
-        $http.get(apiRoute.apiEndpoint + '/api/total').
+        $http.get(API_URL + '/total').
         success(function(data, status, headers, config) {
             if (status == 200) {
                 //console.log('Count is ' + data);
@@ -303,12 +293,12 @@ userApp.controller('mainController', ['$scope', '$location', '$http', 'apiRoute'
             }
         }).
         error(function(data, status, headers, config) {
-            $scope.totalRows = "Error getting data";
+            $scope.totalRows = 'Error getting data';
         });
 
 
         $scope.buttonClicked = function(key) {
-            $location.path("/" + key + "/");
+            $location.path('/' + key + '/');
         };
     }
 ]);

@@ -1,7 +1,7 @@
 'use strict';
 
-userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
-    function($rootScope, $http, $q, apiRoute) {
+userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'API_URL',
+    function($rootScope, $http, $q, API_URL) {
         return {
             getTotal: function(id, gte, lte) {
                 var deferred = $q.defer();
@@ -12,7 +12,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
                 }
                 //console.log(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute);
 
-                $http.get(apiRoute.apiEndpoint + '/api/total/' + id + extraRoute).
+                $http.get(API_URL+ '/total/' + id + extraRoute).
                 success(function(data) {
                     deferred.resolve(data);
                 }).
@@ -26,7 +26,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
             getCurrentKeyWithRange: function(id, page, start, end) {
                 var deferred = $q.defer();
 
-                $http.get(apiRoute.apiEndpoint + '/api/key/' + id + '/execution_time/' + start + '/' + end + '/page/' + page).
+                $http.get(API_URL + '/key/' + id + '/execution_time/' + start + '/' + end + '/page/' + page).
                 success(function(data, status, headers, config) {
                     deferred.resolve(data, status, headers, config);
                 }).
@@ -40,7 +40,7 @@ userApp.factory('executionFactory', ['$rootScope', '$http', '$q', 'apiRoute',
             getCurrentKey: function(id, page) {
                 var deferred = $q.defer();
 
-                $http.get(apiRoute.apiEndpoint + '/api/key/' + id + '/execution_time/page/' + page).
+                $http.get(API_URL + '/key/' + id + '/execution_time/page/' + page).
                 success(function(data, status, headers) {
                     //console.log("Info: got times");
                     if (status == 200) {
