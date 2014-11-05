@@ -35,27 +35,49 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
         };
 
         $scope.drawChart = function(theData) {
-            $scope.chartConfig = {
-                options: {
+            $('#chart1').highcharts({
                     chart: {
-                        type: 'spline'
+                        type: 'spline',
+                        animation: Highcharts.svg, // don't animate in old IE
+                		marginRight: 10,
+                		events: {
+                    		load: function () {
+
+                        	var series = this.series[0];
+                        	
+                        	setInterval(function () {
+                                $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
+                                success(function(data, status, headers, config) {
+                                    console.log("Info: got times");
+                                    if (status == 200) {
+                                        console.log("Info: The times exist");
+                                        console.log("Info: times are: " + JSON.stringify(data));
+                                        $scope.executionTimes = data;
+
+                                        $scope.drasl = [];
+                                        angular.forEach(data, function(key, value) {
+                                            $scope.drasl.push(data[value].execution_time);
+                                        });
+                                        series.setData($scope.drasl, true, true, true);
+                                    }
+                                }).
+                                error(function(data, status, headers, config) {
+                                    console.log("Error: unable to connect");
+                                });
+		                        }, 5000);
+                    		}
+                		}
                     },
-                    plotOptions: {
-                        series: {
-                            stacking: ''
-                        }
-                    }
-                },
-                series: theData,
-                title: {
-                    text: 'Execution Times'
-                },
-                credits: {
-                    enabled: true
-                },
-                loading: false,
-                size: {}
-            }
+                	series: theData,
+	                title: {
+	                    text: 'Execution Times'
+	                },
+	                credits: {
+	                    enabled: true
+	                },
+	                loading: false,
+	                size: {}
+            })
         }
 
         $scope.getAll = function() {
@@ -77,7 +99,6 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
                         "name": "Execution Time",
                         "data": $scope.drasl
                     }];
-
                     $scope.drawChart($scope.chartSeries);
 
                 } else {
@@ -86,6 +107,39 @@ userApp.controller("functionController", ["$scope", "$location", "$routeParams",
             }).
             error(function(data, status, headers, config) {
                 console.log("Error: unable to connect");
+            });
+        };
+
+        $scope.getNew = function() {
+            console.log("Get all");
+            $http.get(apiRoute.apiEndpoint + '/api/key/' + $scope.currentKey + '/execution_time').
+            success(function(data, status, headers, config) {
+                console.log("Info: got times");
+                if (status == 200) {
+                    console.log("Info: The times exist");
+                    console.log("Info: times are: " + JSON.stringify(data));
+                    $scope.executionTimes = data;
+
+                    $scope.drasl = [];
+                    angular.forEach(data, function(key, value) {
+                        $scope.drasl.push(data[value].execution_time);
+                    });
+
+                    $scope.chartSeries = [{
+                        "name": "Execution Time",
+                        "data": $scope.drasl
+                    }];
+
+                    return $scope.chartSeries;
+
+                } else {
+                    console.log("Info: Times empty");
+                    return null;
+                }
+            }).
+            error(function(data, status, headers, config) {
+                console.log("Error: unable to connect");
+                return null;
             });
         };
 
