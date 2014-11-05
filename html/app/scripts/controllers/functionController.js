@@ -54,7 +54,9 @@ userApp.controller('functionController', [
                 options: {
                     chart: {
 
-                        type: 'spline'
+                        type: 'spline',
+                        animation: Highcharts.svg,
+                        marginRight: 25
                     },
                     plotOptions: {
                         series: {
@@ -153,8 +155,25 @@ userApp.controller('functionController', [
 
                 timer = $interval(function() {
                     $scope.getCurrentKey(0);
-                    $scope.drawChart($scope.chartSeries);
-                    $scope.setPage(1);
+                    //$scope.drawChart($scope.chartSeries);
+                    var chart = $('#chart1').highcharts(),
+                        series = chart.series[0];
+                        //alert(JSON.stringify($scope.chartSeries[0].data));
+                        $scope.listForChart = [];
+                        $scope.getTotal(-1, -1);
+                        executionFactory.getCurrentKey($scope.currentKey, $scope.itemPerPage * ($scope.bigCurrentPage - 1)).then(
+                        function(data) {
+                            $scope.executionTimes = data;
+                            $scope.listForChart = [];
+                            data.forEach(function(value) {
+                                $scope.listForChart.push(value.execution_time);
+                            });
+                            //alert(data);
+                            //alert($scope.listForChart);
+                            series.setData($scope.listForChart, true, true, true);
+                        });
+                        //alert($scope.listForChart);
+                    $scope.setPage($scope.bigCurrentPage);
                 }, $scope.updateNumber);
             } else {
                 $scope.stopTimer();
