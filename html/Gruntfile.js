@@ -15,6 +15,11 @@ module.exports = function(grunt) {
     // Time how long tasks take. Can help when optimizing build times
     require('time-grunt')(grunt);
 
+    grunt.loadNpmTasks('grunt-contrib-jshint');
+    grunt.loadNpmTasks('grunt-contrib-concat');
+    grunt.loadNpmTasks('grunt-contrib-uglify');
+    grunt.loadNpmTasks('grunt-ng-annotate');
+
     // Configurable paths for the application
     var appConfig = {
         app: require('./bower.json').appPath || 'app',
@@ -325,6 +330,12 @@ module.exports = function(grunt) {
                     cwd: 'bower_components/bootstrap/dist',
                     src: 'fonts/*',
                     dest: '<%= yeoman.dist %>'
+                },
+                {
+                    expand: true,
+                    cwd: 'bower_components/jquery-ui/themes/cupertino',
+                    src: 'images/*',
+                    dest: '<%= yeoman.dist %>/styles'
                 }]
             },
             styles: {
@@ -343,32 +354,19 @@ module.exports = function(grunt) {
         // Run some tasks in parallel to speed up the build process
         concurrent: {
             server: [
-                'copy:styles',
-                'copy:comstyles'
+                'copy:styles'
             ],
             test: [
-                'copy:styles',
-                'copy:comstyles'
+                'copy:styles'
             ],
             dist: [
                 'copy:styles',
-                'copy:comstyles',
                 'imagemin',
                 'svgmin'
             ]
         },
 
-        // Test settings
-        karma: {
-            unit: {
-                configFile: 'test/karma.conf.js',
-                singleRun: true
-            }
-        }
     });
-
-    grunt.loadNpmTasks('grunt-ng-annotate');
-
 
     grunt.registerTask('serve', 'Compile then start a connect web server', function(target) {
         if (target === 'dist') {
@@ -395,7 +393,6 @@ module.exports = function(grunt) {
         'concurrent:test',
         'autoprefixer',
         'connect:test',
-        'karma'
     ]);
 
     grunt.registerTask('build', [
@@ -410,7 +407,7 @@ module.exports = function(grunt) {
         'cdnify',
         'cssmin',
         'uglify',
-        'filerev',
+        //'filerev',
         'usemin',
         'htmlmin'
     ]);

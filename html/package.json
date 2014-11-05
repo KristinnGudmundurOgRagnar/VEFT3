@@ -5,8 +5,7 @@
         "type": "git",
         "url": "git://github.com/KristinnGudmundurOgRagnar/VEFT3.git"
     },
-    "dependencies": {
-    },
+    "dependencies": {},
     "devDependencies": {
         "grunt": "^0.4.5",
         "grunt-autoprefixer": "^0.7.3",
@@ -36,6 +35,6 @@
         "node": ">=0.10.0"
     },
     "scripts": {
-        "test": "grunt test"
+        "postinstall": "bower install"
     }
 }
