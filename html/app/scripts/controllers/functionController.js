@@ -154,11 +154,18 @@ userApp.controller('functionController', [
                     $scope.setPage(1);
                 }, $scope.updateNumber);
             } else {
-                if (angular.isDefined(timer)) {
-                    $interval.cancel(timer);
-                    timer = undefined;
-                }
+                $scope.stopTimer();
             }
         }, true);
+
+        $scope.stopTimer = function() {
+            if (angular.isDefined(timer)) {
+                $interval.cancel(timer);
+                timer = undefined;
+            }
+        };
+        $scope.$on('$destroy', function() {
+            $scope.stopTimer();
+        });
     }
 ]);
