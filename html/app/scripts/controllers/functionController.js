@@ -19,6 +19,9 @@ userApp.controller('functionController', [
         $scope.totalItems = 0;
         $scope.chartSeries = [];
 
+        // The checkbox
+        $scope.isTimerDisabled = false;
+
         $scope.updateNumber = 10000;
         var isNotRange = true;
 
@@ -27,6 +30,9 @@ userApp.controller('functionController', [
             //console.log("Now our startTime is: " + sDate + "T" + sTime + ":59Z");
             //console.log("Now our endTime is: " + eDate + "T" + eTime + ":59Z");
             isNotRange = false;
+            $scope.isTimerDisabled = true;
+            $scope.timerCheck = false;
+
             var start = new Date(sDate + 'T' + sTime + ':59Z').getTime() / 1000;
             var end = new Date(eDate + 'T' + eTime + ':59Z').getTime() / 1000;
 
@@ -72,7 +78,7 @@ userApp.controller('functionController', [
                     text: 'Execution Times'
                 },
                 xAxis: {
-                reversed: true,
+                    reversed: true,
                 },
                 credits: {
                     enabled: false
@@ -106,6 +112,9 @@ userApp.controller('functionController', [
             $scope.drawChart($scope.chartSeries);
             $scope.setPage(1);
             isNotRange = true;
+
+            $scope.isTimerDisabled = false;
+            $scope.timerCheck = false;
         };
 
 
@@ -152,16 +161,17 @@ userApp.controller('functionController', [
             });
 
             if (trues === true) {
-
+                $scope.isUpdateChecked = false;
+                $scope.disableUpdate = true;
                 timer = $interval(function() {
                     $scope.getCurrentKey(0);
                     //$scope.drawChart($scope.chartSeries);
                     var chart = $('#chart1').highcharts(),
                         series = chart.series[0];
-                        //alert(JSON.stringify($scope.chartSeries[0].data));
-                        $scope.listForChart = [];
-                        $scope.getTotal(-1, -1);
-                        executionFactory.getCurrentKey($scope.currentKey, $scope.itemPerPage * ($scope.bigCurrentPage - 1)).then(
+                    //alert(JSON.stringify($scope.chartSeries[0].data));
+                    $scope.listForChart = [];
+                    $scope.getTotal(-1, -1);
+                    executionFactory.getCurrentKey($scope.currentKey, $scope.itemPerPage * ($scope.bigCurrentPage - 1)).then(
                         function(data) {
                             $scope.executionTimes = data;
                             $scope.listForChart = [];
@@ -172,7 +182,7 @@ userApp.controller('functionController', [
                             //alert($scope.listForChart);
                             series.setData($scope.listForChart, true, true, true);
                         });
-                        //alert($scope.listForChart);
+                    //alert($scope.listForChart);
                     $scope.setPage($scope.bigCurrentPage);
                 }, $scope.updateNumber);
             } else {
