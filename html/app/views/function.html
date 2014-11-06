@@ -70,7 +70,7 @@
 			<strong>Limited to 25 lines per page</strong><br />
 			<strong>Found {{ getTotalForKey }} items</strong>
 		</div>
-		<pagination total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" ng-change="pageChanged()"></pagination>
+		<pagination rotate="false" num-pages="numPages" total-items="bigTotalItems" ng-model="bigCurrentPage" max-size="maxSize" class="pagination-sm" boundary-links="true" ng-change="pageChanged()"></pagination>
 		<table class="table table-striped">
 			<thead>
 				<th>TimeStamp</th>
